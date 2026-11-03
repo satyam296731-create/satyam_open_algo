@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 import { authApi } from '@/api/auth'
 import { LogoutConfirmDialog } from '@/components/auth/LogoutConfirmDialog'
 import { WebSocketTesterPanel } from '@/components/playground/WebSocketTesterPanel'
@@ -623,8 +624,8 @@ export default function Playground() {
             <Menu className="h-4 w-4" />
           </Button>
           <div className="flex items-center gap-2 px-2">
-            <img src="/images/android-chrome-192x192.png" alt="OpenAlgo" className="w-6 h-6" />
-            <span className="font-semibold text-sm">openalgo</span>
+            <BrandLogo className="w-6 h-6 object-contain" />
+            <span className="font-semibold text-sm">SP Trading</span>
           </div>
         </div>
 
@@ -784,7 +785,7 @@ export default function Playground() {
               ))}
               <DropdownMenuItem asChild>
                 <a
-                  href="https://docs.openalgo.in"
+                  href="https://github.com/satyam296731-create/satyam-open-algo/blob/sp-trading-branding/docs/INDEX.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"
@@ -1170,11 +1171,7 @@ export default function Playground() {
               ) : (
                 /* Empty State */
                 <div className="flex-1 flex flex-col items-center justify-center text-center bg-background">
-                  <img
-                    src="/images/android-chrome-192x192.png"
-                    alt="OpenAlgo"
-                    className="w-16 h-16 mb-4"
-                  />
+                  <BrandLogo className="w-16 h-16 mb-4 object-contain" />
                   <h2 className="text-lg font-semibold text-foreground/80 mb-2">
                     API Playground [WS-TEST]
                   </h2>

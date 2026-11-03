@@ -6,18 +6,13 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# openalgo Installation Banner
+# SP Trading Installation Banner
 echo -e "${BLUE}"
-echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
-echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
-echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
-echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
-echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
-echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "      
+echo "                 SP TRADING"
 echo "                                                                        "
 echo -e "${NC}"
 
-# OpenAlgo Installation and Configuration Script
+# SP Trading Installation and Configuration Script
 
 
 
@@ -47,7 +42,7 @@ check_status() {
 
 # >>> Telegram /chart browser (kept identical in install.sh, install-multi.sh and update.sh)
 # Telegram /chart draws its images with Kaleido, which starts a headless Chrome or
-# Chromium as the OpenAlgo service account. A snap browser cannot start as that
+# Chromium as the SP Trading service account. A snap browser cannot start as that
 # account: snap needs a writable home, and a service account's home (/var/www) is not
 # one ("cannot create snap home dir"), so every render fails with "The browser seemed
 # to close immediately after starting". Ubuntu's chromium and chromium-browser packages
@@ -78,7 +73,7 @@ chart_browser_path() {
 # With apt: Google Chrome's .deb on amd64 (it adds Google's apt source, so Chrome
 # updates with the system), else Debian's own chromium package, never Ubuntu's snap.
 # With dnf or yum: the distribution's chromium, else Google Chrome's rpm on x86_64.
-# With pacman: chromium. Never fatal: OpenAlgo runs without it, only /chart cannot draw.
+# With pacman: chromium. Never fatal: SP Trading runs without it, only /chart cannot draw.
 ensure_chart_browser() {
     local found tmp candidate
     if found="$(chart_browser_path)"; then
@@ -114,10 +109,10 @@ ensure_chart_browser() {
     if found="$(chart_browser_path)"; then
         log_message "Telegram /chart will use $found" "$GREEN"
         if command -v snap >/dev/null 2>&1 && snap list chromium >/dev/null 2>&1; then
-            log_message "The chromium snap is not used by OpenAlgo. If nothing else needs it: sudo snap remove chromium" "$YELLOW"
+            log_message "The chromium snap is not used by SP Trading. If nothing else needs it: sudo snap remove chromium" "$YELLOW"
         fi
     else
-        log_message "No browser the OpenAlgo service can start was installed, so Telegram /chart will not draw charts" "$YELLOW"
+        log_message "No browser the SP Trading service can start was installed, so Telegram /chart will not draw charts" "$YELLOW"
         log_message "Install Google Chrome (amd64) or your distribution's chromium package; on arm64 Ubuntu, Chromium exists only as a snap, which cannot run as a service" "$YELLOW"
     fi
     return 0
@@ -339,7 +334,7 @@ check_and_configure_swap() {
 }
 
 # Start logging
-log_message "Starting OpenAlgo installation log at: $LOG_FILE" "$BLUE"
+log_message "Starting SP Trading installation log at: $LOG_FILE" "$BLUE"
 log_message "----------------------------------------" "$BLUE"
 
 # Detect OS type and version
@@ -418,7 +413,7 @@ check_and_configure_swap
 check_timezone
 
 # Collect installation parameters
-log_message "OpenAlgo Installation Configuration" "$BLUE"
+log_message "SP Trading Installation Configuration" "$BLUE"
 log_message "----------------------------------------" "$BLUE"
 
 # Get domain name
@@ -498,7 +493,7 @@ fi
 # Same-domain mode — /mcp and /oauth/* are served from the same nginx
 # vhost as the dashboard, so the existing reverse-proxy config covers it.
 # Local stdio MCP (Claude Desktop / Cursor / Windsurf) works regardless.
-log_message "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to OpenAlgo over HTTPS." "$BLUE"
+log_message "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to SP Trading over HTTPS." "$BLUE"
 log_message "Skip this if you only use the local MCP server with Claude Desktop / Cursor." "$YELLOW"
 read -p "Enable Remote MCP? (y/N): " enable_mcp_input
 ENABLE_REMOTE_MCP="false"
@@ -542,7 +537,7 @@ case "$OS_TYPE" in
 esac
 NGINX_CONFIG_FILE="$NGINX_AVAILABLE/openalgo.conf"
 
-log_message "\nStarting OpenAlgo installation for $DEPLOY_NAME..." "$YELLOW"
+log_message "\nStarting SP Trading installation for $DEPLOY_NAME..." "$YELLOW"
 
 # Update system packages
 log_message "\nUpdating system packages..." "$BLUE"
@@ -754,8 +749,8 @@ if ! command -v certbot >/dev/null 2>&1; then
 fi
 log_message "Certbot installed successfully" "$GREEN"
 
-# Check and handle existing OpenAlgo installation
-handle_existing "$BASE_PATH" "installation directory" "OpenAlgo directory for $DEPLOY_NAME"
+# Check and handle existing SP Trading installation
+handle_existing "$BASE_PATH" "installation directory" "SP Trading directory for $DEPLOY_NAME"
 
 # Create base directory
 log_message "\nCreating base directory..." "$BLUE"
@@ -763,7 +758,7 @@ sudo mkdir -p $BASE_PATH
 check_status "Failed to create base directory"
 
 # Clone repository
-log_message "\nCloning OpenAlgo repository..." "$BLUE"
+log_message "\nCloning SP Trading repository..." "$BLUE"
 # --filter=blob:none makes this a partial clone: the server sends every
 # commit and tree but no file contents, so it pulls ~20 MB instead of
 # ~280 MB. Blobs outside the current checkout are fetched on demand, so
@@ -772,8 +767,8 @@ log_message "\nCloning OpenAlgo repository..." "$BLUE"
 # branch switching working. Nearly all of that 280 MB is superseded
 # frontend/dist bundles that a server never reads. A host without filter
 # support just full-clones, so this is never worse than no flag at all.
-sudo git clone --filter=blob:none https://github.com/marketcalls/openalgo.git $OPENALGO_PATH
-check_status "Failed to clone OpenAlgo repository"
+sudo git clone --branch sp-trading-branding --filter=blob:none https://github.com/satyam296731-create/satyam-open-algo.git $OPENALGO_PATH
+check_status "Failed to clone SP Trading repository"
 
 # Create virtual environment using uv
 log_message "\nSetting up Python virtual environment with uv..." "$BLUE"
@@ -1190,13 +1185,13 @@ sudo nginx -t
 check_status "Failed to validate Nginx configuration"
 
 # Check and handle existing systemd service
-handle_existing "/etc/systemd/system/$SERVICE_NAME.service" "systemd service" "OpenAlgo service file"
+handle_existing "/etc/systemd/system/$SERVICE_NAME.service" "systemd service" "SP Trading service file"
 
 # Create systemd service with unique name
 log_message "\nCreating systemd service..." "$BLUE"
 sudo tee /etc/systemd/system/$SERVICE_NAME.service > /dev/null << EOL
 [Unit]
-Description=OpenAlgo Gunicorn Daemon ($DEPLOY_NAME)
+Description=SP Trading Gunicorn Daemon ($DEPLOY_NAME)
 After=network.target
 
 [Service]
@@ -1339,13 +1334,13 @@ fi
 log_message "Installation Log: $LOG_FILE" "$BLUE"
 
 log_message "\nNext Steps:" "$YELLOW"
-log_message "1. Visit https://$DOMAIN to access your OpenAlgo instance" "$GREEN"
+log_message "1. Visit https://$DOMAIN to access your SP Trading instance" "$GREEN"
 log_message "2. Configure your broker settings in the web interface" "$GREEN"
 log_message "3. Review the logs using: sudo journalctl -u $SERVICE_NAME" "$GREEN"
 log_message "4. Monitor the application status: sudo systemctl status $SERVICE_NAME" "$GREEN"
 
 log_message "\nUseful Commands:" "$YELLOW"
-log_message "Restart OpenAlgo: sudo systemctl restart $SERVICE_NAME" "$BLUE"
+log_message "Restart SP Trading: sudo systemctl restart $SERVICE_NAME" "$BLUE"
 log_message "View Logs: sudo journalctl -u $SERVICE_NAME" "$BLUE"
 log_message "Check Status: sudo systemctl status $SERVICE_NAME" "$BLUE"
 log_message "View Installation Log: cat $LOG_FILE" "$BLUE"

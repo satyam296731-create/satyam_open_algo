@@ -1,4 +1,4 @@
-# OpenAlgo Advanced Docker Installation (Multi-Instance & Custom SSL)
+# SP Trading Advanced Docker Installation (Multi-Instance & Custom SSL)
 
 This guide covers the advanced installation script (`install-docker-multi-custom-ssl.sh`), which is designed for power users who need:
 - **Multiple OpenAlgo instances** on a single server.
@@ -12,7 +12,7 @@ This guide covers the advanced installation script (`install-docker-multi-custom
 Run the following command on your Ubuntu 20.04+ or Debian 11+ server:
 
 ```bash
-wget https://raw.githubusercontent.com/marketcalls/openalgo/main/install/install-docker-multi-custom-ssl.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install-docker-multi-custom-ssl.sh
 chmod +x install-docker-multi-custom-ssl.sh
 ./install-docker-multi-custom-ssl.sh
 ```
@@ -28,7 +28,7 @@ chmod +x install-docker-multi-custom-ssl.sh
 
 When you run the script, it will interactively prompt you for:
 
-1.  **Git repository**: press Enter for `https://github.com/marketcalls/openalgo.git`.
+1.  **Git repository**: press Enter for `https://github.com/satyam296731-create/satyam-open-algo.git`.
 
 2.  **Domains**: one or more domain names separated by spaces (for example `zerodha.example.com upstox.example.com`). Each domain is one independent OpenAlgo instance, installed in `/opt/openalgo/<domain>`.
 

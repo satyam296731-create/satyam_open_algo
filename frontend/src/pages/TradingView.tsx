@@ -235,7 +235,7 @@ export default function TradingView() {
             <strong>Webhook URL not accessible!</strong> TradingView cannot send alerts to
             localhost. Use <strong>ngrok</strong>, <strong>Cloudflare Tunnel</strong>,{' '}
             <strong>VS Code Dev Tunnel</strong>, or a <strong>custom domain</strong> to expose your
-            OpenAlgo instance to the internet. Update <code>HOST_SERVER</code> in your{' '}
+            SP Trading instance to the internet. Update <code>HOST_SERVER</code> in your{' '}
             <code>.env</code> file with your external URL.
           </AlertDescription>
         </Alert>
@@ -448,7 +448,7 @@ export default function TradingView() {
               </p>
               <Button asChild variant="default">
                 <a
-                  href="https://docs.openalgo.in/trading-platform/tradingview"
+                  href="https://github.com/satyam296731-create/satyam-open-algo/blob/sp-trading-branding/docs/INDEX.md"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

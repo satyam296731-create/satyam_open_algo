@@ -98,7 +98,11 @@ export default function ServerError() {
         {/* Quick Links */}
         <div className="flex flex-wrap justify-center gap-4">
           <Button variant="ghost" size="sm" asChild>
-            <a href="https://docs.openalgo.in" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://github.com/satyam296731-create/satyam-open-algo/blob/sp-trading-branding/docs/INDEX.md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <BookOpen className="h-4 w-4 mr-2" />
               Documentation
             </a>

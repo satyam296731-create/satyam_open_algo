@@ -1114,7 +1114,7 @@ def get_app_info():
     """Return app information including version for React SPA."""
     from utils.version import get_version
 
-    return jsonify({"status": "success", "version": get_version(), "name": "OpenAlgo"})
+    return jsonify({"status": "success", "version": get_version(), "name": "SP Trading"})
 
 
 @auth_bp.route("/analyzer-mode", methods=["GET"])

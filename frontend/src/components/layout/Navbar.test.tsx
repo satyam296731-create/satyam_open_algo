@@ -29,6 +29,20 @@ function currentLinks(container: HTMLElement) {
 }
 
 describe('Navbar', () => {
+  it('shows SP Trading as the navigation brand on desktop and mobile', async () => {
+    const user = userEvent.setup()
+    renderNavbar('/dashboard')
+
+    expect(screen.getByText('SP Trading')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'SP Trading' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Toggle menu' }))
+
+    const sheet = await screen.findByRole('dialog', { name: 'Navigation Menu' })
+    expect(within(sheet).getByText('SP Trading')).toBeInTheDocument()
+    expect(within(sheet).getByRole('img', { name: 'SP Trading' })).toBeInTheDocument()
+  })
+
   it('marks only the active route as current in desktop navigation', () => {
     renderNavbar('/positions')
 

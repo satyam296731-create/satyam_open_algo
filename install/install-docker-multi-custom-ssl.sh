@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# OpenAlgo Docker Multi-Instance Installation with Custom SSL
+# SP Trading Docker Multi-Instance Installation with Custom SSL
 # Supports deploying multiple instances with existing SSL certificates (including Wildcards)
 
 # Colors for output
@@ -245,7 +245,7 @@ write_instance_profile() {
     printf 'MEMORY_PROFILE=%s\n' "$2" > "$conf"
 }
 
-# The web server an instance's .env asks for. OpenAlgo runs eventlet unless
+# The web server an instance's .env asks for. SP Trading runs eventlet unless
 # OPENALGO_WORKER_CLASS = 'gthread' is set (docs/gthread/README.md).
 read_worker_class() {
     local env_file="$1" value=""
@@ -554,10 +554,14 @@ fi
 log "\n=== Configuration ===" "$BLUE"
 
 # 0. Git Repository Selection
-DEFAULT_REPO="https://github.com/marketcalls/openalgo.git"
+DEFAULT_REPO="https://github.com/satyam296731-create/satyam-open-algo.git"
+DEFAULT_BRANCH="sp-trading-branding"
 read -p "Enter Git Repository URL [Default: $DEFAULT_REPO]: " REPO_URL
 REPO_URL=${REPO_URL:-$DEFAULT_REPO}
 log "Using Repository: $REPO_URL" "$GREEN"
+read -p "Enter Git branch [Default: $DEFAULT_BRANCH]: " REPO_BRANCH
+REPO_BRANCH=${REPO_BRANCH:-$DEFAULT_BRANCH}
+log "Using Git branch: $REPO_BRANCH" "$GREEN"
 
 # 1. Get Domains
 while true; do
@@ -1188,14 +1192,14 @@ for i in "${!CONF_DOMAINS[@]}"; do
         # branch switching working. Nearly all of that 280 MB is superseded
         # frontend/dist bundles that a server never reads. A host without filter
         # support just full-clones, so this is never worse than no flag at all.
-        git clone --filter=blob:none "$REPO_URL" "$INSTANCE_DIR"
+        git clone --branch "$REPO_BRANCH" --filter=blob:none "$REPO_URL" "$INSTANCE_DIR"
     else
         log "Updating existing repository..." "$GREEN"
         cd "$INSTANCE_DIR"
         # Force sync with the selected repo URL to pick up Dockerfile fixes
         git remote set-url origin "$REPO_URL"
         git fetch origin
-        git reset --hard origin/main
+        git checkout -B "$REPO_BRANCH" "origin/$REPO_BRANCH"
     fi
     
     mkdir -p "$INSTANCE_DIR"/{log,logs,keys,db,strategies/scripts,strategies/examples}
@@ -1464,7 +1468,7 @@ EOF
         1)
             log "Error: $DOMAIN was asked to run $WORKER but started on the other web server." "$RED"
             if [ "$WORKER" = "gthread" ]; then
-                log "       The image has no gthread launcher (an older OpenAlgo version or fork). Update the code and re-run." "$RED"
+                log "       The image has no gthread launcher (an older SP Trading version or fork). Update the code and re-run." "$RED"
             fi
             FAILED_DOMAINS+=("$DOMAIN")
             ;;
@@ -1485,7 +1489,7 @@ check_status "Nginx reload failed"
 
 cat <<'EOF' > /usr/local/bin/openalgo-ctl
 #!/bin/bash
-# OpenAlgo Manager
+# SP Trading Manager
 
 INSTALL_BASE="/opt/openalgo"
 

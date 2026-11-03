@@ -204,7 +204,7 @@ export default function Dashboard() {
   const quickAccessCards = [
     {
       href: '/search',
-      label: 'OpenAlgo Symbols',
+      label: 'SP Trading Symbols',
       description: 'Universal symbology across brokers',
       icon: Search,
       gradient: 'from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10',
@@ -224,7 +224,7 @@ export default function Dashboard() {
       borderColor: 'border-violet-500/20 hover:border-violet-500/40',
     },
     {
-      href: 'https://docs.openalgo.in',
+      href: 'https://github.com/satyam296731-create/satyam-open-algo/blob/sp-trading-branding/docs/INDEX.md',
       label: 'Documentation',
       description: 'Tutorials, API docs & features',
       icon: BookOpen,
@@ -245,9 +245,9 @@ export default function Dashboard() {
       borderColor: 'border-green-500/20 hover:border-green-500/40',
     },
     {
-      href: 'https://www.openalgo.in/learn',
-      label: 'OpenVarsity',
-      description: 'Learn algo trading with OpenAlgo',
+      href: 'https://github.com/satyam296731-create/satyam-open-algo/tree/sp-trading-branding/docs',
+      label: 'SP Trading Guides',
+      description: 'Explore setup guides, strategies, and API documentation',
       icon: GraduationCap,
       gradient: 'from-blue-500/10 to-blue-500/5 hover:from-blue-500/20 hover:to-blue-500/10',
       iconBg: 'bg-blue-500/20',

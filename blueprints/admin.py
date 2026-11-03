@@ -1343,8 +1343,8 @@ def _web_server_notes(info):
     if under_gunicorn and requested == "gthread" and worker != "gthread":
         if info.get("started_by_launcher"):
             notes.append(
-                "Your .env asks for the gthread web server, but OpenAlgo was started "
-                "before that change. Restart OpenAlgo after 23:30 IST to apply it."
+                "Your .env asks for the gthread web server, but SP Trading was started "
+                "before that change. Restart SP Trading after 23:30 IST to apply it."
             )
         else:
             notes.append(
@@ -1360,13 +1360,13 @@ def _web_server_notes(info):
             and launcher.get("effective") == "gthread"
         ):
             notes.append(
-                "The eventlet web server is not installed for this OpenAlgo, so it runs on "
+                "The eventlet web server is not installed for this SP Trading build, so it runs on "
                 "gthread. Run the updater to reinstall the dependencies if you want eventlet."
             )
         else:
             notes.append(
-                "Your .env asks for the eventlet web server, but OpenAlgo was started "
-                "before that change. Restart OpenAlgo after 23:30 IST to apply it."
+                "Your .env asks for the eventlet web server, but SP Trading was started "
+                "before that change. Restart SP Trading after 23:30 IST to apply it."
             )
 
     pool = info.get("thread_pool") or {}
@@ -1379,9 +1379,9 @@ def _web_server_notes(info):
             in_use = f"{busy} of {threads}" if busy is not None else f"all {threads}"
             notes.append(
                 f"Almost every request slot is busy ({in_use}), so new requests can wait. "
-                "Close OpenAlgo tabs you are not using. If this keeps happening during "
+                "Close SP Trading tabs you are not using. If this keeps happening during "
                 "trading, go back to eventlet: set OPENALGO_WORKER_CLASS = 'eventlet' in "
-                ".env and restart OpenAlgo after 23:30 IST."
+                ".env and restart SP Trading after 23:30 IST."
             )
     return notes
 
@@ -1921,7 +1921,7 @@ def _render_report(payload, errors_summary, errors_recent, fmt):
     h2 = "## " if is_md else ""
 
     lines = []
-    lines.append(f"{h1}OpenAlgo System Report")
+    lines.append(f"{h1}SP Trading System Report")
     lines.append("")
     lines.append(_md_kv("Generated", datetime.now().strftime("%Y-%m-%d %H:%M:%S")) if is_md else f"Generated: {datetime.now()}")
     lines.append("")

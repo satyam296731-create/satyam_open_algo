@@ -98,7 +98,11 @@ export const profileMenuItems: NavItem[] = [
 
 // External links
 export const externalLinks = {
-  docs: { href: 'https://docs.openalgo.in', label: 'Docs', icon: BookOpen },
+  docs: {
+    href: 'https://github.com/satyam296731-create/satyam-open-algo/tree/sp-trading-branding/docs',
+    label: 'Docs',
+    icon: BookOpen,
+  },
 }
 
 // Shared utility to check if a route is active.

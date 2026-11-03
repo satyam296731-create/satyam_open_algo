@@ -1,8 +1,8 @@
-# 04 - Installation Guide
+# 04 - SP Trading Installation Guide
 
 ## Introduction
 
-This guide walks you through installing OpenAlgo on your system. We'll cover Windows, Ubuntu, and macOS installations.
+This guide walks you through installing SP Trading, customized from the OpenAlgo open-source project, on Windows, Ubuntu, and macOS. Source-based installation commands below use the SP Trading repository.
 
 ## Quick Install (All Platforms)
 
@@ -10,7 +10,7 @@ If you're comfortable with command line, here's the fastest way:
 
 ```bash
 # 1. Clone the repository
-git clone --filter=blob:none https://github.com/marketcalls/openalgo.git
+git clone --branch sp-trading-branding --filter=blob:none https://github.com/satyam296731-create/satyam-open-algo.git openalgo
 cd openalgo
 
 # 2. Install UV package manager
@@ -19,7 +19,7 @@ pip install uv
 # 3. Create configuration
 cp .sample.env .env
 
-# 4. Run OpenAlgo
+# 4. Run SP Trading
 uv run app.py
 ```
 
@@ -62,16 +62,16 @@ git --version
 # Should show: git version 2.x.x
 ```
 
-#### Step 3: Download OpenAlgo
+#### Step 3: Download SP Trading
 
 Open Command Prompt (search "cmd") and run:
 
 ```cmd
-# Navigate to where you want OpenAlgo
+# Navigate to where you want SP Trading
 cd C:\Users\YourName\Documents
 
 # Clone the repository
-git clone --filter=blob:none https://github.com/marketcalls/openalgo.git
+git clone --branch sp-trading-branding --filter=blob:none https://github.com/satyam296731-create/satyam-open-algo.git openalgo
 
 # Enter the folder
 cd openalgo
@@ -94,7 +94,7 @@ copy .sample.env .env
 - Right-click `.env` → Open with → Notepad
 - We'll configure this in the next chapter
 
-#### Step 6: Run OpenAlgo
+#### Step 6: Run SP Trading
 
 ```cmd
 uv run app.py
@@ -125,11 +125,11 @@ sudo apt install python3.12 python3.12-venv python3-pip git -y
 python3.12 --version
 ```
 
-#### Step 3: Download OpenAlgo
+#### Step 3: Download SP Trading
 
 ```bash
 # Clone repository
-git clone --filter=blob:none https://github.com/marketcalls/openalgo.git
+git clone --branch sp-trading-branding --filter=blob:none https://github.com/satyam296731-create/satyam-open-algo.git openalgo
 cd openalgo
 ```
 
@@ -143,7 +143,7 @@ pip install uv
 cp .sample.env .env
 ```
 
-#### Step 5: Run OpenAlgo
+#### Step 5: Run SP Trading
 
 ```bash
 uv run app.py
@@ -165,11 +165,11 @@ Access at `http://your-server-ip:5000`
 brew install python@3.12 git
 ```
 
-#### Step 3: Download and Run OpenAlgo
+#### Step 3: Download and Run SP Trading
 
 ```bash
 # Clone repository
-git clone --filter=blob:none https://github.com/marketcalls/openalgo.git
+git clone --branch sp-trading-branding --filter=blob:none https://github.com/satyam296731-create/satyam-open-algo.git openalgo
 cd openalgo
 
 # Install UV
@@ -219,7 +219,7 @@ ZMQ_PORT='5555'
 
 ```bash
 # Clone repository
-git clone --filter=blob:none https://github.com/marketcalls/openalgo.git
+git clone --branch sp-trading-branding --filter=blob:none https://github.com/satyam296731-create/satyam-open-algo.git openalgo
 cd openalgo
 
 # Create environment file
@@ -289,7 +289,7 @@ docker-compose up
 
 Open browser → Go to `http://127.0.0.1:5000`
 
-You should see the OpenAlgo login page.
+You should see the SP Trading login page.
 
 ### Check 2: REST API
 
@@ -355,7 +355,7 @@ uv run python -c "import secrets; print(secrets.token_hex(32))"
 
 Run this twice - once for APP_KEY, once for API_KEY_PEPPER.
 
-## Running OpenAlgo
+## Running SP Trading
 
 ### Development Mode (Default)
 
@@ -367,7 +367,7 @@ Access at `http://127.0.0.1:5000`
 
 ## Production Deployment (Ubuntu Server)
 
-For production use, deploy OpenAlgo on an Ubuntu server using the automated `install.sh` script. This is the **recommended approach** for live trading.
+For production use, deploy SP Trading on an Ubuntu server using the automated `install.sh` script. This is the **recommended approach** for live trading.
 
 **Important**: The install script configures everything automatically:
 - Nginx reverse proxy with SSL/TLS
@@ -440,7 +440,7 @@ ssh user@your_server_ip
 mkdir -p ~/openalgo-install
 cd ~/openalgo-install
 
-wget https://raw.githubusercontent.com/marketcalls/openalgo/main/install/install.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install.sh
 
 chmod +x install.sh
 ```
@@ -507,7 +507,7 @@ Each deployment gets:
 #### Service Management
 
 ```bash
-# List all OpenAlgo services
+# List all SP Trading services
 systemctl list-units "openalgo-*"
 
 # Restart specific deployment
@@ -593,7 +593,7 @@ If you need to receive webhooks from TradingView, GoCharting, or ChartInk but do
 | **devtunnel** (Microsoft) | `devtunnel host -p 5000` | [devtunnels.ms](https://aka.ms/devtunnels) |
 | **Cloudflare Tunnel** | `cloudflared tunnel --url http://localhost:5000` | [cloudflare.com](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/) |
 
-**Important**: Tunneling is **only for webhooks**. Always run OpenAlgo on your own server with proper domain setup for production use. Don't run the entire application through a tunnel.
+**Important**: Tunneling is **only for webhooks**. Always run SP Trading on your own server with proper domain setup for production use. Don't run the entire application through a tunnel.
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -601,7 +601,7 @@ If you need to receive webhooks from TradingView, GoCharting, or ChartInk but do
 │                                                                 │
 │  Your Ubuntu Server (install.sh)                               │
 │  ┌──────────────────────────────────────────────────────────┐ │
-│  │  Nginx (HTTPS) → Gunicorn → OpenAlgo                     │ │
+│  │  Nginx (HTTPS) → Gunicorn → SP Trading                   │ │
 │  │  • Dashboard access: https://yourdomain.com              │ │
 │  │  • API access: https://yourdomain.com/api/v1/*           │ │
 │  │  • WebSocket: wss://yourdomain.com/ws                    │ │
@@ -619,12 +619,12 @@ If you need to receive webhooks from TradingView, GoCharting, or ChartInk but do
 
 ## Docker Deployment (Alternative)
 
-OpenAlgo can also be deployed using Docker with custom domain and SSL. This is useful if you prefer containerized deployments.
+SP Trading can also be deployed using Docker with a custom domain and SSL. This is useful if you prefer containerized deployments.
 
 ### Quick Start
 
 ```bash
-wget https://raw.githubusercontent.com/marketcalls/openalgo/refs/heads/main/install/install-docker.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install-docker.sh
 chmod +x install-docker.sh
 ./install-docker.sh
 ```
@@ -647,7 +647,7 @@ usermod -aG sudo openalgo
 su - openalgo
 
 # Download and run
-wget https://raw.githubusercontent.com/marketcalls/openalgo/refs/heads/main/install/install-docker.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install-docker.sh
 chmod +x install-docker.sh
 ./install-docker.sh
 ```
@@ -655,7 +655,7 @@ chmod +x install-docker.sh
 **Option 2: As Root User**
 
 ```bash
-wget https://raw.githubusercontent.com/marketcalls/openalgo/refs/heads/main/install/install-docker.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install-docker.sh
 chmod +x install-docker.sh
 ./install-docker.sh
 ```
@@ -672,7 +672,7 @@ The script will prompt you for:
 2. Installs Docker & Docker Compose
 3. Installs Nginx web server
 4. Installs Certbot for SSL
-5. Clones OpenAlgo to `/opt/openalgo`
+5. Clones the SP Trading repository to `/opt/openalgo`
 6. Configures environment variables
 7. Sets up firewall (UFW)
 8. Obtains SSL certificate
@@ -762,7 +762,7 @@ openalgo-backup
 sudo docker compose down
 
 # Pull latest code
-sudo git pull origin main
+sudo git pull origin sp-trading-branding
 
 # Rebuild and restart
 sudo docker compose build --no-cache
@@ -774,7 +774,7 @@ openalgo-status
 
 ## Raspberry Pi Installation
 
-OpenAlgo can run on Raspberry Pi models 3, 4, or 5 (4GB+ RAM), preferably with Ubuntu 24.04+ server edition.
+SP Trading can run on Raspberry Pi models 3, 4, or 5 (4GB+ RAM), preferably with Ubuntu 24.04+ server edition.
 
 ### Hardware Requirements
 
@@ -817,7 +817,7 @@ Use the same `install.sh` script as Ubuntu Server:
 ```bash
 mkdir -p ~/openalgo-install
 cd ~/openalgo-install
-wget https://raw.githubusercontent.com/marketcalls/openalgo/main/install/install.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install.sh
 chmod +x install.sh
 sudo ./install.sh
 ```
@@ -834,7 +834,7 @@ sudo sh get-docker.sh
 
 **Clone and Build:**
 ```bash
-git clone --filter=blob:none https://github.com/marketcalls/openalgo
+git clone --branch sp-trading-branding --filter=blob:none https://github.com/satyam296731-create/satyam-open-algo.git openalgo
 cd openalgo
 cp .sample.env .env
 # Edit .env with your broker credentials
@@ -870,22 +870,22 @@ For external access:
 4. Configure SSL/TLS to "Full (strict)"
 5. Enable WAF and rate limiting for security
 
-## Updating OpenAlgo
+## Updating SP Trading
 
 To get the latest version:
 
 ```bash
 cd openalgo
 
-# Stop OpenAlgo first
+# Stop SP Trading first
 
 # Pull latest changes
-git pull origin main
+git pull origin sp-trading-branding
 
 # Sync dependencies
 uv sync
 
-# Restart OpenAlgo
+# Restart SP Trading
 uv run app.py
 ```
 
@@ -907,7 +907,7 @@ chmod +x app.py
 
 ### Issue: "Database locked"
 
-Close all OpenAlgo instances and restart.
+Close all SP Trading instances and restart.
 
 ### Issue: "Port 5000 in use"
 

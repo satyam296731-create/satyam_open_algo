@@ -432,8 +432,8 @@ export default function AgentChat() {
                 <>
                   <p className="text-sm font-medium">Ask the agent</p>
                   <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-                    It reads your platform through the same service layer the rest of OpenAlgo uses,
-                    and it can write an OpenAlgo strategy or a Flow workflow for you to review.
+                    It reads your platform through the same service layer SP Trading uses, and it
+                    can write a trading strategy or a Flow workflow for you to review.
                   </p>
                 </>
               ) : (

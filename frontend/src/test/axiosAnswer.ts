@@ -5,9 +5,9 @@ import {
   type InternalAxiosRequestConfig,
 } from 'axios'
 
-/** What OpenAlgo says when it refuses a request that would wait too long for the broker. */
+/** What SP Trading says when it refuses a request that would wait too long for the broker. */
 export const BROKER_BUSY_SENTENCE =
-  "OpenAlgo is pacing requests to stay within your broker's rate limit, and this one would have had to wait too long for its turn. Try again in a few seconds."
+  "SP Trading is pacing requests to stay within your broker's rate limit, and this one would have had to wait too long for its turn. Try again in a few seconds."
 
 /**
  * An axios adapter that answers like the server would, then fails the

@@ -1,16 +1,16 @@
-# 01 - What is OpenAlgo?
+# 01 - What is SP Trading?
 
 ## Introduction
 
-**OpenAlgo** is a free, open-source algorithmic trading platform that bridges your trading ideas with execution. Built with Python Flask and a modern React frontend, it provides a unified API layer across 36 broker plugins: 35 securities integrations and Delta Exchange for crypto derivatives. Strategies can connect through TradingView, Amibroker, Python scripts, Excel, and AI agents.
+**SP Trading** is a customized build based on the free, open-source OpenAlgo algorithmic trading platform. Built with Python Flask and a modern React frontend, it provides a unified API layer across 36 broker plugins: 35 securities integrations and Delta Exchange for crypto derivatives. Strategies can connect through TradingView, Amibroker, Python scripts, Excel, and AI agents.
 
-**Website**: [https://openalgo.in](https://openalgo.in)
-**GitHub**: [https://github.com/marketcalls/openalgo](https://github.com/marketcalls/openalgo)
-**Documentation**: [https://docs.openalgo.in](https://docs.openalgo.in)
+SP Trading source: [https://github.com/satyam296731-create/satyam-open-algo/tree/sp-trading-branding](https://github.com/satyam296731-create/satyam-open-algo/tree/sp-trading-branding)
 
-## The Problem OpenAlgo Solves
+SP Trading is a customized distribution; OpenAlgo copyright, license, and required attribution are retained.
 
-### Before OpenAlgo
+## The Problem SP Trading Solves
+
+### Before SP Trading
 
 ```
 You see a buy signal on TradingView
@@ -26,19 +26,19 @@ You click buy
 Signal is 2 minutes old by now!
 ```
 
-### With OpenAlgo
+### With SP Trading
 
 ```
 TradingView sends a signal
         ↓
-OpenAlgo receives it instantly
+SP Trading receives it instantly
         ↓
 Order placed with your broker
         ↓
 All in under 1 second!
 ```
 
-## Who is OpenAlgo For?
+## Who is SP Trading For?
 
 ### Retail Traders
 - Tired of manually placing orders
@@ -82,7 +82,7 @@ All in under 1 second!
 | Feature | Description |
 |---------|-------------|
 | **Flow Visual Builder** | No-code strategy builder with drag-and-drop nodes |
-| **Python Strategy Hosting** | Host and schedule Python strategies directly in OpenAlgo |
+| **Python Strategy Hosting** | Host and schedule Python strategies directly in SP Trading |
 | **TradingView Integration** | Pine Script alerts to automatic orders via webhooks |
 | **Amibroker Integration** | AFL strategies with direct API communication |
 | **ChartInk Integration** | Stock scanner alerts to automated trades |
@@ -131,7 +131,7 @@ All in under 1 second!
 │                              │                                           │
 │                              ▼                                           │
 │  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                         OpenAlgo Platform                          │  │
+│  │                         SP Trading Platform                        │  │
 │  │                                                                    │  │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐               │  │
 │  │  │  REST API   │  │  WebSocket  │  │    Flow     │               │  │
@@ -160,7 +160,7 @@ All in under 1 second!
 
 The repository contains 36 broker plugin directories: 35 securities integrations and one Delta Exchange crypto-derivatives integration. The runtime broker selector is generated from these installed plugins, so it remains the authoritative list for a deployed version.
 
-**Benefit**: Switch brokers without changing your strategy code - OpenAlgo's unified API handles the translation.
+**Benefit**: Switch brokers without changing your strategy code - SP Trading's unified API handles the translation.
 
 ## Supported Exchanges
 
@@ -247,9 +247,9 @@ Test strategies with ₹1 Crore sandbox capital:
 - Market depth (5/20 levels)
 - Order status updates
 
-## What OpenAlgo is NOT
+## What SP Trading is NOT
 
-Let's be clear about what OpenAlgo doesn't do:
+Let's be clear about what SP Trading doesn't do:
 
 | Misconception | Reality |
 |---------------|---------|
@@ -273,7 +273,7 @@ Let's be clear about what OpenAlgo doesn't do:
 
 Ready to begin? Here's your path:
 
-1. **Next**: Learn [Why Build with OpenAlgo](../02-why-build-with-openalgo/README.md)
+1. **Next**: Learn [Why Build with SP Trading](../02-why-build-with-openalgo/README.md)
 2. Understand [Key Concepts](../03-key-concepts/README.md)
 3. Check [System Requirements](../03-system-requirements/README.md)
 4. Follow [Installation Guide](../04-installation/README.md)
@@ -291,7 +291,7 @@ Ready to begin? Here's your path:
 
 ## Summary
 
-| Aspect | OpenAlgo |
+| Aspect | SP Trading |
 |--------|----------|
 | **Cost** | Free and open source (AGPL v3.0) |
 | **Brokers** | 36 plugins: 35 securities integrations and Delta Exchange crypto |
@@ -307,4 +307,4 @@ Ready to begin? Here's your path:
 
 ---
 
-**Next**: [02 - Why Build with OpenAlgo](../02-why-build-with-openalgo/README.md) - Understand the value proposition.
+**Next**: [02 - Why Build with SP Trading](../02-why-build-with-openalgo/README.md) - Understand the value proposition.

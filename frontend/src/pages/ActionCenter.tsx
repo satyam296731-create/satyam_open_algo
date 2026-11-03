@@ -445,7 +445,7 @@ export default function ActionCenterPage() {
       {/* Info Alert */}
       <Alert>
         <Info className="h-4 w-4" />
-        <AlertTitle>OpenAlgo Action Center</AlertTitle>
+        <AlertTitle>SP Trading Action Center</AlertTitle>
         <AlertDescription>
           Centralized hub for managing semi-automated trading orders. When Semi-Auto mode is enabled
           in API Key settings, all incoming orders are queued here for manual approval before broker
@@ -733,7 +733,7 @@ export default function ActionCenterPage() {
                               <AlertTriangle className="h-4 w-4" />
                               <AlertTitle>This order may still be sending</AlertTitle>
                               <AlertDescription>
-                                OpenAlgo has no broker answer recorded. A split or basket order can
+                                No broker response has been recorded. A split or basket order can
                                 take longer than two minutes. Sending may still be in progress, or
                                 an interruption may have left its outcome unknown. Check your
                                 broker's order book and refresh this page. Do not place this order

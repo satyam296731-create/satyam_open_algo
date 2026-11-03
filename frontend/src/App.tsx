@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import { Providers } from '@/app/providers'
 import { AuthSync } from '@/components/auth/AuthSync'
+import { ThemeBrandAssets } from '@/components/brand/ThemeBrandAssets'
 import { FullWidthLayout } from '@/components/layout/FullWidthLayout'
 import { Layout } from '@/components/layout/Layout'
 import { PageLoader } from '@/components/ui/page-loader'
@@ -163,6 +164,7 @@ function App() {
   return (
     <Providers>
       <BrowserRouter>
+        <ThemeBrandAssets />
         <PageTitleUpdater />
         <AuthSync>
           <Suspense fallback={<PageLoader />}>

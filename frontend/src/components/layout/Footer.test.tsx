@@ -58,8 +58,13 @@ describe('Footer', () => {
 
     await waitFor(() => expect(json).toHaveBeenCalled())
     expect(screen.queryByText(/session/)).not.toBeInTheDocument()
-    expect(screen.getByText('Open Source Algo Platform for Everyone')).toBeInTheDocument()
-    expect(separatorCount()).toBe(1)
+    expect(
+      screen.getByText('Customized from the OpenAlgo open-source project')
+    ).toBeInTheDocument()
+    expect(screen.getByText('SP Trading')).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'GitHub' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /openalgo\.in/i })).not.toBeInTheDocument()
+    expect(separatorCount()).toBe(0)
   })
 
   it('renders sessions without a version badge when version is absent', async () => {
@@ -71,7 +76,7 @@ describe('Footer', () => {
     await waitFor(() => expect(json).toHaveBeenCalled())
     expect(screen.getByText('3 sessions')).toBeInTheDocument()
     expect(screen.queryByText('v')).not.toBeInTheDocument()
-    expect(separatorCount()).toBe(2)
+    expect(separatorCount()).toBe(1)
   })
 
   it('survives a failed app-info request', async () => {
@@ -82,8 +87,12 @@ describe('Footer', () => {
 
     await request.catch(() => undefined)
     await waitFor(() => expect(fetch).toHaveBeenCalledWith('/auth/app-info'))
-    expect(screen.getByText('Copyright 2026')).toBeInTheDocument()
-    expect(screen.getByText('Open Source Algo Platform for Everyone')).toBeInTheDocument()
-    expect(separatorCount()).toBe(1)
+    expect(screen.queryByText(/Copyright/)).not.toBeInTheDocument()
+    expect(screen.getByText('SP Trading')).toBeInTheDocument()
+    expect(
+      screen.getByText('Customized from the OpenAlgo open-source project')
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'GitHub' })).not.toBeInTheDocument()
+    expect(separatorCount()).toBe(0)
   })
 })

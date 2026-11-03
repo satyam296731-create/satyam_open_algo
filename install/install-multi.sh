@@ -7,15 +7,9 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# OpenAlgo Multi-Instance Installation Banner
+# SP Trading Multi-Instance Installation Banner
 echo -e "${BLUE}"
-echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
-echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
-echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
-echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
-echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
-echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "
-echo "                      MULTI-INSTANCE INSTALLER                          "
+echo "SP TRADING - MULTI-INSTANCE INSTALLER"
 echo -e "${NC}"
 
 # Create logs directory
@@ -44,7 +38,7 @@ check_status() {
 
 # >>> Telegram /chart browser (kept identical in install.sh, install-multi.sh and update.sh)
 # Telegram /chart draws its images with Kaleido, which starts a headless Chrome or
-# Chromium as the OpenAlgo service account. A snap browser cannot start as that
+# Chromium as the SP Trading service account. A snap browser cannot start as that
 # account: snap needs a writable home, and a service account's home (/var/www) is not
 # one ("cannot create snap home dir"), so every render fails with "The browser seemed
 # to close immediately after starting". Ubuntu's chromium and chromium-browser packages
@@ -75,7 +69,7 @@ chart_browser_path() {
 # With apt: Google Chrome's .deb on amd64 (it adds Google's apt source, so Chrome
 # updates with the system), else Debian's own chromium package, never Ubuntu's snap.
 # With dnf or yum: the distribution's chromium, else Google Chrome's rpm on x86_64.
-# With pacman: chromium. Never fatal: OpenAlgo runs without it, only /chart cannot draw.
+# With pacman: chromium. Never fatal: SP Trading runs without it, only /chart cannot draw.
 ensure_chart_browser() {
     local found tmp candidate
     if found="$(chart_browser_path)"; then
@@ -111,10 +105,10 @@ ensure_chart_browser() {
     if found="$(chart_browser_path)"; then
         log_message "Telegram /chart will use $found" "$GREEN"
         if command -v snap >/dev/null 2>&1 && snap list chromium >/dev/null 2>&1; then
-            log_message "The chromium snap is not used by OpenAlgo. If nothing else needs it: sudo snap remove chromium" "$YELLOW"
+            log_message "The chromium snap is not used by SP Trading. If nothing else needs it: sudo snap remove chromium" "$YELLOW"
         fi
     else
-        log_message "No browser the OpenAlgo service can start was installed, so Telegram /chart will not draw charts" "$YELLOW"
+        log_message "No browser the SP Trading service can start was installed, so Telegram /chart will not draw charts" "$YELLOW"
         log_message "Install Google Chrome (amd64) or your distribution's chromium package; on arm64 Ubuntu, Chromium exists only as a snap, which cannot run as a service" "$YELLOW"
     fi
     return 0
@@ -172,7 +166,7 @@ check_timezone() {
 }
 
 # Start logging
-log_message "Starting OpenAlgo Multi-Instance installation" "$BLUE"
+log_message "Starting SP Trading Multi-Instance installation" "$BLUE"
 log_message "Log file: $LOG_FILE" "$BLUE"
 log_message "----------------------------------------" "$BLUE"
 
@@ -181,7 +175,7 @@ check_timezone
 
 # Ask number of instances
 while true; do
-    read -p "How many OpenAlgo instances do you want to set up? " INSTANCES
+    read -p "How many SP Trading instances do you want to set up? " INSTANCES
     if [[ "$INSTANCES" =~ ^[0-9]+$ ]] && [ "$INSTANCES" -gt 0 ]; then
         break
     else
@@ -189,11 +183,12 @@ while true; do
     fi
 done
 
-log_message "Setting up $INSTANCES OpenAlgo instances" "$GREEN"
+log_message "Setting up $INSTANCES SP Trading instances" "$GREEN"
 
 # Base configuration
 BASE_DIR="/var/python/openalgo-flask"
-REPO_URL="https://github.com/marketcalls/openalgo.git"
+REPO_URL="https://github.com/satyam296731-create/satyam-open-algo.git"
+REPO_BRANCH="sp-trading-branding"
 FLASK_PORT_BASE=5000
 WS_PORT_BASE=8765
 ZMQ_PORT_BASE=5555
@@ -282,7 +277,7 @@ for ((i=1; i<=INSTANCES; i++)); do
     # Same-domain mode — /mcp and /oauth/* are served from the same nginx
     # vhost as this instance's dashboard, so no extra config is required.
     # Local stdio MCP (Claude Desktop / Cursor / Windsurf) works regardless.
-    log_message "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to OpenAlgo over HTTPS." "$BLUE"
+    log_message "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to SP Trading over HTTPS." "$BLUE"
     log_message "Skip this if you only use the local MCP server with Claude Desktop / Cursor." "$YELLOW"
     read -p "Enable Remote MCP for instance $i? (y/N): " enable_mcp_input
     if [[ $enable_mcp_input =~ ^[Yy]$ ]]; then
@@ -362,7 +357,7 @@ for ((i=1; i<=INSTANCES; i++)); do
         # branch switching working. Nearly all of that 280 MB is superseded
         # frontend/dist bundles that a server never reads. A host without filter
         # support just full-clones, so this is never worse than no flag at all.
-        sudo git clone --filter=blob:none "$REPO_URL" "$INSTANCE_DIR"
+        sudo git clone --branch "$REPO_BRANCH" --filter=blob:none "$REPO_URL" "$INSTANCE_DIR"
         check_status "Failed to clone repository"
     else
         log_message "Directory exists, skipping clone" "$YELLOW"
@@ -679,7 +674,7 @@ EOL
     log_message "Creating systemd service..." "$BLUE"
     sudo tee /etc/systemd/system/$SERVICE_NAME.service > /dev/null << EOL
 [Unit]
-Description=OpenAlgo Instance $i ($DOMAIN - $BROKER)
+Description=SP Trading Instance $i ($DOMAIN - $BROKER)
 After=network.target
 
 [Service]

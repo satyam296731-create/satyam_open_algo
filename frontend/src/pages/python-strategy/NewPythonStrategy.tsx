@@ -14,7 +14,7 @@ import { showToast } from '@/utils/toast'
 import { ALL_DAY_START, ALL_DAYS, RunAllDaySwitch } from './RunAllDaySwitch'
 
 const EXAMPLE_STRATEGY = `"""
-Example OpenAlgo Strategy
+Example SP Trading Strategy
 This is a minimal example showing how to use the OpenAlgo Python SDK.
 """
 

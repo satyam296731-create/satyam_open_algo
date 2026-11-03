@@ -7,7 +7,7 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# OpenAlgo Update Banner
+# SP Trading Update Banner
 echo -e "${BLUE}"
 echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
 echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
@@ -18,8 +18,8 @@ echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  �
 echo "                          UPDATE  SCRIPT                                "
 echo -e "${NC}"
 
-# OpenAlgo Update Script
-# Updates an existing OpenAlgo installation to the latest version using the UV method.
+# SP Trading Update Script
+# Updates an existing SP Trading installation to the latest version using the UV method.
 # Supports both server deployments (installed via install.sh) and local development setups.
 
 # Create logs directory if it doesn't exist
@@ -48,7 +48,7 @@ check_status() {
 
 # >>> Telegram /chart browser (kept identical in install.sh, install-multi.sh and update.sh)
 # Telegram /chart draws its images with Kaleido, which starts a headless Chrome or
-# Chromium as the OpenAlgo service account. A snap browser cannot start as that
+# Chromium as the SP Trading service account. A snap browser cannot start as that
 # account: snap needs a writable home, and a service account's home (/var/www) is not
 # one ("cannot create snap home dir"), so every render fails with "The browser seemed
 # to close immediately after starting". Ubuntu's chromium and chromium-browser packages
@@ -79,7 +79,7 @@ chart_browser_path() {
 # With apt: Google Chrome's .deb on amd64 (it adds Google's apt source, so Chrome
 # updates with the system), else Debian's own chromium package, never Ubuntu's snap.
 # With dnf or yum: the distribution's chromium, else Google Chrome's rpm on x86_64.
-# With pacman: chromium. Never fatal: OpenAlgo runs without it, only /chart cannot draw.
+# With pacman: chromium. Never fatal: SP Trading runs without it, only /chart cannot draw.
 ensure_chart_browser() {
     local found tmp candidate
     if found="$(chart_browser_path)"; then
@@ -115,10 +115,10 @@ ensure_chart_browser() {
     if found="$(chart_browser_path)"; then
         log_message "Telegram /chart will use $found" "$GREEN"
         if command -v snap >/dev/null 2>&1 && snap list chromium >/dev/null 2>&1; then
-            log_message "The chromium snap is not used by OpenAlgo. If nothing else needs it: sudo snap remove chromium" "$YELLOW"
+            log_message "The chromium snap is not used by SP Trading. If nothing else needs it: sudo snap remove chromium" "$YELLOW"
         fi
     else
-        log_message "No browser the OpenAlgo service can start was installed, so Telegram /chart will not draw charts" "$YELLOW"
+        log_message "No browser the SP Trading service can start was installed, so Telegram /chart will not draw charts" "$YELLOW"
         log_message "Install Google Chrome (amd64) or your distribution's chromium package; on arm64 Ubuntu, Chromium exists only as a snap, which cannot run as a service" "$YELLOW"
     fi
     return 0
@@ -126,7 +126,7 @@ ensure_chart_browser() {
 # <<< Telegram /chart browser
 
 # Start logging
-log_message "Starting OpenAlgo update log at: $LOG_FILE" "$BLUE"
+log_message "Starting SP Trading update log at: $LOG_FILE" "$BLUE"
 log_message "----------------------------------------" "$BLUE"
 
 # Detect OS type
@@ -224,7 +224,7 @@ if [ -d "$SIMPLE_PATH/.git" ] && [ -f "$SIMPLE_PATH/.env" ]; then
     VENV_PATH="$SIMPLE_PATH/.venv"
     SERVICE_NAME="openalgo"
 
-    log_message "Found OpenAlgo install at $SIMPLE_PATH" "$GREEN"
+    log_message "Found SP Trading install at $SIMPLE_PATH" "$GREEN"
     log_message "Service: $SERVICE_NAME" "$BLUE"
 else
     DEPLOYMENTS=($(find_deployments))
@@ -274,7 +274,7 @@ fi
 # mode and update the instance as root, with no service restart. An instance is
 # a checkout (.git, app.py, .env and venv) whose service file's
 # WorkingDirectory is that folder, the same test the web server switch script
-# uses to find OpenAlgo services. Only looked for when neither layout above was
+# uses to find SP Trading services. Only looked for when neither layout above was
 # found, so those behave exactly as before.
 MULTI_SYSTEMD_DIR="/etc/systemd/system"
 
@@ -312,7 +312,7 @@ if [ "$SERVER_MODE" = false ] && [ ${#MULTI_INSTANCES[@]} -gt 0 ]; then
         done
     done
 
-    # Run from an OpenAlgo checkout that is none of the instances, such as a
+    # Run from an SP Trading checkout that is none of the instances, such as a
     # developer clone on the same server: that checkout is the one asked for,
     # and it is updated in local development mode exactly as before these
     # instances were recognised. Picking an instance here instead would stop
@@ -326,7 +326,7 @@ if [ "$SERVER_MODE" = false ] && [ ${#MULTI_INSTANCES[@]} -gt 0 ]; then
         fi
     fi
     if [ -n "$OWN_CHECKOUT" ]; then
-        log_message "This updater was run from $OWN_CHECKOUT, which is not one of the OpenAlgo instances made by install-multi.sh, so that checkout is the one updated and no instance is touched." "$YELLOW"
+        log_message "This updater was run from $OWN_CHECKOUT, which is not one of the SP Trading instances made by install-multi.sh, so that checkout is the one updated and no instance is touched." "$YELLOW"
         log_message "To update an instance, run the updater from inside it, for example:" "$YELLOW"
         log_message "  cd $DEPLOY_BASE/${MULTI_INSTANCES[0]} && sudo bash install/update.sh" "$YELLOW"
     fi
@@ -334,7 +334,7 @@ fi
 
 if [ "$SERVER_MODE" = false ] && [ ${#MULTI_INSTANCES[@]} -gt 0 ] && [ -z "$OWN_CHECKOUT" ]; then
     SERVER_MODE=true
-    log_message "Found ${#MULTI_INSTANCES[@]} OpenAlgo instance(s) made by install-multi.sh:" "$GREEN"
+    log_message "Found ${#MULTI_INSTANCES[@]} SP Trading instance(s) made by install-multi.sh:" "$GREEN"
     for i in "${!MULTI_INSTANCES[@]}"; do
         log_message "  $((i+1)). ${MULTI_INSTANCES[$i]}" "$BLUE"
     done
@@ -379,7 +379,7 @@ if [ "$SERVER_MODE" = false ]; then
     elif [ -d "$SCRIPT_DIR/../.git" ] && [ -f "$SCRIPT_DIR/../app.py" ]; then
         OPENALGO_PATH="$(cd "$SCRIPT_DIR/.." && pwd)"
     else
-        log_message "Error: No OpenAlgo deployment found." "$RED"
+        log_message "Error: No SP Trading deployment found." "$RED"
         log_message "For server deployments, ensure install.sh was run first." "$YELLOW"
         log_message "For local development, run this script from the openalgo directory." "$YELLOW"
         exit 1
@@ -738,7 +738,7 @@ if [ "$SERVER_MODE" = true ]; then
     sudo systemctl daemon-reload
 
     # Retrofit deployments created by older installers. The guard is written
-    # into each OpenAlgo server block, so inherited/default nginx access logs
+    # into each SP Trading server block, so inherited/default nginx access logs
     # are replaced by a conditional log that excludes replayable URL secrets.
     # Every edit is backed up and nginx -t must pass before the backup is
     # discarded; otherwise all touched files are restored.
@@ -834,7 +834,7 @@ if [ "$SERVER_MODE" = true ]; then
     harden_nginx_webhook_logs
     check_status "Failed to harden nginx webhook access logs"
 
-    # Start the OpenAlgo service
+    # Start the SP Trading service
     sudo systemctl start "$SERVICE_NAME"
     check_status "Failed to start $SERVICE_NAME"
 
@@ -929,7 +929,7 @@ fi
 # Summary
 # ============================================
 log_message "\n========================================" "$GREEN"
-log_message "  OpenAlgo Update Summary" "$GREEN"
+log_message "  SP Trading Update Summary" "$GREEN"
 log_message "========================================" "$GREEN"
 log_message "Version: $CURRENT_COMMIT -> $NEW_COMMIT" "$BLUE"
 log_message "Branch: $CURRENT_BRANCH" "$BLUE"
@@ -953,7 +953,7 @@ if [ "$SERVER_MODE" = true ]; then
 else
     log_message "\nNext Steps:" "$YELLOW"
     log_message "  Start application: uv run app.py" "$BLUE"
-    log_message "  API documentation: https://docs.openalgo.in/api-documentation/v1" "$BLUE"
+    log_message "  API documentation: https://github.com/satyam296731-create/satyam-open-algo/blob/sp-trading-branding/docs/INDEX.md" "$BLUE"
 fi
 
 if [ -n "$NEW_VARS" ]; then
@@ -971,16 +971,16 @@ log_message "\nUpdate completed successfully!" "$GREEN"
 # (OPENALGO_WORKER_CLASS = 'gthread') and whose service does not use the
 # launcher yet. Every other install skips this silently: nothing is printed
 # and nothing changes. The switch script comes from the code just pulled and
-# keeps its own backup, checks OpenAlgo after the restart and puts the
+# keeps its own backup, checks SP Trading after the restart and puts the
 # previous service file back if anything fails. It refuses to restart
-# OpenAlgo between 09:00 and 23:30 IST. Guide: docs/gthread/README.md
+# SP Trading between 09:00 and 23:30 IST. Guide: docs/gthread/README.md
 if [ "$SERVER_MODE" = true ] && [ -f "$OPENALGO_PATH/install/switch-worker.sh" ] \
     && sudo -n bash "$OPENALGO_PATH/install/switch-worker.sh" --check --service "$SERVICE_NAME" > /dev/null 2>&1; then
     log_message "\nYour .env asks for the gthread web server. Switching $SERVICE_NAME to it..." "$BLUE"
     sudo bash "$OPENALGO_PATH/install/switch-worker.sh" --service "$SERVICE_NAME" --yes 2>&1 | tee -a "$LOG_FILE"
     switch_status=${PIPESTATUS[0]}
     if [ "$switch_status" -eq 2 ]; then
-        log_message "OpenAlgo is not running after the switch. See the messages above." "$RED"
+        log_message "SP Trading is not running after the switch. See the messages above." "$RED"
         exit 1
     fi
 fi

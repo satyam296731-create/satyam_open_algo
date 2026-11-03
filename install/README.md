@@ -1,4 +1,10 @@
-# OpenAlgo Installation Guide
+# SP Trading Installation Guide
+
+This guide installs the SP Trading customized distribution from
+`https://github.com/satyam296731-create/satyam-open-algo/tree/sp-trading-branding`.
+SP Trading is based
+on the OpenAlgo open-source project; its license and required source attribution
+are preserved.
 
 ## Prerequisites
 
@@ -61,10 +67,10 @@ mkdir -p ~/openalgo-install
 cd ~/openalgo-install
 
 # Download the installation script
-wget https://raw.githubusercontent.com/marketcalls/openalgo/main/install/install.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install.sh
 
 # Or using curl
-curl -O https://raw.githubusercontent.com/marketcalls/openalgo/main/install/install.sh
+curl -O https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install.sh
 
 # Make the script executable
 chmod +x install.sh
@@ -90,7 +96,7 @@ The installation process will:
 - **Auto-configure SELinux** on RHEL-based systems
 - Obtain and install Let's Encrypt SSL certificate
 - Configure Nginx with SSL and WebSocket support
-- Set up the OpenAlgo application with unique deployment name
+- Set up the SP Trading application with a unique deployment name
 - Create systemd service with unique name based on domain and broker
 - Generate detailed installation logs in the logs directory
 
@@ -215,7 +221,7 @@ After installation completes, verify each deployment:
    ```
 
 5. **Telegram /chart Says "Failed to generate charts"**
-   The chart images are drawn by a headless Chrome or Chromium running as the OpenAlgo
+   The chart images are drawn by a headless Chrome or Chromium running as the SP Trading
    service account. A snap browser cannot run as that account (it needs a home the account
    can write), and Ubuntu packages Chromium only as a snap. Older installs set up that snap,
    so /chart never drew. Running `update.sh` installs a browser that works; to check by hand:
@@ -296,7 +302,7 @@ After installation completes, verify each deployment:
 
 1. **Service Management Examples**
    ```bash
-   # List all OpenAlgo services
+   # List all SP Trading services
    systemctl list-units "openalgo-*"
    
    # Example outputs:
@@ -364,7 +370,7 @@ After installation completes, verify each deployment:
      ```
 
 2. **SELinux (RHEL-based systems)**
-   - The installation script **automatically configures SELinux** for OpenAlgo
+   - The installation script **automatically configures SELinux** for SP Trading
    - Sets correct contexts for application directories
    - Enables httpd network connections
    - Creates custom policies if needed
@@ -397,7 +403,7 @@ After installation completes, verify each deployment:
 ## Support
 
 For issues and support:
-- Check the [GitHub repository](https://github.com/marketcalls/openalgo)
+- Check the [SP Trading GitHub repository](https://github.com/satyam296731-create/satyam-open-algo)
 - Review the logs using commands provided above
 - Contact support with relevant log information
 

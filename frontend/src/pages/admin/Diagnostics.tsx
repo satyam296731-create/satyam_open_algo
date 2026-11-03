@@ -270,7 +270,7 @@ export default function Diagnostics() {
       <p className="text-sm text-muted-foreground">
         Use this page to troubleshoot issues. Click{' '}
         <span className="font-semibold">Download .md</span> and attach it when asking for help on
-        the OpenAlgo community — secrets and tokens are never included.
+        when asking for help — secrets and tokens are never included.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -312,7 +312,7 @@ export default function Diagnostics() {
           <Section
             icon={Layers}
             title="Web server"
-            description="How OpenAlgo serves requests and market data on this server."
+            description="How SP Trading serves requests and market data on this server."
           >
             <WebServerDetails runtime={info.runtime} />
           </Section>
@@ -354,7 +354,7 @@ export default function Diagnostics() {
         {/* Build */}
         <Section icon={Settings} title="Build">
           <div>
-            <KV label="OpenAlgo" value={info?.build.openalgo_version} />
+            <KV label="SP Trading" value={info?.build.openalgo_version} />
             <KV label="OpenAlgo SDK" value={info?.build.openalgo_sdk_version} />
             <KV label="Git branch" value={info?.build.git_branch} />
             <KV label="Git commit" value={info?.build.git_commit} />

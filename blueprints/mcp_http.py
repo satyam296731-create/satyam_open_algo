@@ -102,7 +102,7 @@ MCP_SSE_RETRY_MS = 30_000
 _SSE_STREAM_KIND = "mcp_sse"
 #: What a client over the stream cap is told.
 SSE_BUSY_MESSAGE = (
-    "OpenAlgo is already holding as many MCP event streams as it allows. Try again in a moment."
+    "SP Trading is already holding as many MCP event streams as it allows. Try again in a moment."
 )
 
 # Tool calls in flight under the gthread worker: one call per this many worker
@@ -114,7 +114,7 @@ _TOOL_CALL_MIN_LIMIT = 2
 _TOOL_CALL_FALLBACK_LIMIT = 8
 #: The reason sent with a call refused for being over the cap.
 TOOL_CALLS_BUSY_MESSAGE = (
-    "OpenAlgo is busy with other requests, so this call was not run and nothing "
+    "SP Trading is busy with other requests, so this call was not run and nothing "
     "was sent. Try again in a few seconds."
 )
 

@@ -1,5 +1,6 @@
 import { BookOpen, ExternalLink, Info, Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { BrokerAuthSignOut } from '@/components/auth/BrokerAuthSignOut'
 import { Button } from '@/components/ui/button'
@@ -256,7 +257,7 @@ export default function BrokerSelect() {
           <Card className="w-full max-w-md shadow-xl order-1 lg:order-2">
             <CardHeader className="text-center">
               <div className="flex justify-center mb-4">
-                <img src="/logo.png" alt="OpenAlgo" className="h-20 w-20" />
+                <BrandLogo variant="full" className="h-32 w-32 object-contain" />
               </div>
               <CardTitle className="text-2xl">Connect Your Trading Account</CardTitle>
               <CardDescription>
@@ -333,7 +334,7 @@ export default function BrokerSelect() {
               Connect Your <span className="text-primary">Broker</span>
             </h1>
             <p className="text-lg lg:text-xl mb-8 text-muted-foreground">
-              Link your trading account to start executing trades through OpenAlgo's algorithmic
+              Link your trading account to start executing trades through SP Trading's algorithmic
               trading platform.
             </p>
 
@@ -345,7 +346,11 @@ export default function BrokerSelect() {
 
             <div className="flex justify-center lg:justify-start gap-4">
               <Button variant="outline" asChild>
-                <a href="https://docs.openalgo.in" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://github.com/satyam296731-create/satyam-open-algo/tree/sp-trading-branding/docs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <BookOpen className="mr-2 h-4 w-4" />
                   Documentation
                 </a>

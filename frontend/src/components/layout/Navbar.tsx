@@ -1,6 +1,7 @@
 import { BookOpen, ChevronDown, Menu } from 'lucide-react'
 import { useCallback, useState, useSyncExternalStore } from 'react'
 import { Link, useLocation } from 'react-router'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -103,8 +104,8 @@ export function Navbar({ fluid = false }: NavbarProps = {}) {
                 className="flex items-center gap-2 px-2"
                 onClick={() => setMobileOpen(false)}
               >
-                <img src="/logo.png" alt="OpenAlgo" className="h-8 w-8" />
-                <span className="font-semibold">OpenAlgo</span>
+                <BrandLogo className="h-8 w-8 object-contain" />
+                <span className="font-semibold">SP Trading</span>
               </Link>
 
               {/* Secondary nav items (not in bottom nav) */}
@@ -174,7 +175,7 @@ export function Navbar({ fluid = false }: NavbarProps = {}) {
                   )
                 })}
                 <a
-                  href="https://docs.openalgo.in"
+                  href="https://github.com/satyam296731-create/satyam-open-algo/tree/sp-trading-branding/docs"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition-colors min-h-[44px] touch-manipulation hover:bg-muted active:bg-muted"
@@ -190,8 +191,8 @@ export function Navbar({ fluid = false }: NavbarProps = {}) {
 
         {/* Logo */}
         <Link to="/dashboard" className="flex items-center gap-2 mr-6">
-          <img src="/logo.png" alt="OpenAlgo" className="h-8 w-8" />
-          <span className="hidden font-semibold sm:inline-block">OpenAlgo</span>
+          <BrandLogo className="h-8 w-8 object-contain" />
+          <span className="hidden font-semibold sm:inline-block">SP Trading</span>
         </Link>
 
         {/* Desktop Navigation: text tabs, the current page underlined on the

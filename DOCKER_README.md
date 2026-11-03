@@ -1,4 +1,8 @@
-# OpenAlgo - Algorithmic Trading Platform
+# Upstream OpenAlgo Docker Runner
+
+This quick-start uses the upstream `marketcalls/openalgo:latest` image. It does
+not install the customized SP Trading source. For SP Trading, use the
+source-based installer in [install/README.md](install/README.md).
 
 OpenAlgo is a production-ready algorithmic trading platform providing a unified API layer across 36 broker plugins: 35 securities integrations and Delta Exchange for crypto derivatives. Seamlessly integrate with TradingView, Amibroker, Excel, Python, and AI agents.
 

@@ -6,7 +6,7 @@ api = Api(
     api_v1_bp,
     version="1.0",
     title="OpenAlgo API",
-    description="API for OpenAlgo Trading Platform",
+    description="API for SP Trading",
     doc=False,
 )
 

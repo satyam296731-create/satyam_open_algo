@@ -1396,15 +1396,21 @@ export function ChartPane({
           {/* Right side: the feed, then the view actions. */}
           <div className="ml-auto flex shrink-0 items-center gap-0.5 pl-2">
             {branding && (
-              <a
-                href={branding.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={branding.label}
-                className="inline-flex min-h-11 items-center whitespace-nowrap px-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground sm:min-h-0"
-              >
-                {branding.label}
-              </a>
+              branding.href ? (
+                <a
+                  href={branding.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={branding.label}
+                  className="inline-flex min-h-11 items-center whitespace-nowrap px-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground sm:min-h-0"
+                >
+                  {branding.label}
+                </a>
+              ) : (
+                <span className="inline-flex min-h-11 items-center whitespace-nowrap px-1 text-[11px] text-muted-foreground sm:min-h-0">
+                  {branding.label}
+                </span>
+              )
             )}
             <span
               className={cn('mx-1 inline-block h-2 w-2 shrink-0 rounded-full', ledClass(wsState))}

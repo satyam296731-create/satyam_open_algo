@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# OpenAlgo Docker Installation Script
+# SP Trading Docker Installation Script
 # Simplified installation for Docker deployment with custom domain
 
 # Colors for output
@@ -10,15 +10,9 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# OpenAlgo Banner
+# SP Trading Banner
 echo -e "${BLUE}"
-echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
-echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
-echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
-echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
-echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
-echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "      
-echo "                    DOCKER INSTALLATION                                 "
+echo "SP TRADING - DOCKER INSTALLATION"
 echo -e "${NC}"
 
 # Function to log messages
@@ -54,7 +48,7 @@ is_xts_broker() {
 }
 
 # Start installation
-log "Starting OpenAlgo Docker Installation..." "$GREEN"
+log "Starting SP Trading Docker Installation..." "$GREEN"
 log "========================================" "$GREEN"
 
 # Check if running as root
@@ -98,7 +92,7 @@ log "\n=== Installation Configuration ===" "$BLUE"
 
 # Get domain name
 while true; do
-    read -p "Enter your domain name (e.g., demo.openalgo.in): " DOMAIN
+    read -p "Enter your domain name (e.g., demo.sp-trading.in): " DOMAIN
     if [ -z "$DOMAIN" ]; then
         log "Error: Domain name is required" "$RED"
         continue
@@ -166,7 +160,7 @@ fi
 # Same-domain mode — /mcp and /oauth/* are served from the same nginx
 # vhost as the dashboard, so the existing reverse-proxy config covers it.
 # Local stdio MCP (Claude Desktop / Cursor / Windsurf) works regardless.
-log "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to OpenAlgo over HTTPS." "$BLUE"
+log "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to SP Trading over HTTPS." "$BLUE"
 log "Skip this if you only use the local MCP server with Claude Desktop / Cursor." "$YELLOW"
 read -p "Enable Remote MCP? (y/N): " enable_mcp_input
 ENABLE_REMOTE_MCP="false"
@@ -236,8 +230,8 @@ if ! docker compose version &> /dev/null; then
 fi
 log "Docker Compose version: $(docker compose version --short)" "$GREEN"
 
-# Clone OpenAlgo repository
-log "\n=== Cloning OpenAlgo Repository ===" "$BLUE"
+# Clone SP Trading repository
+log "\n=== Cloning SP Trading Repository ===" "$BLUE"
 if [ -d "$INSTALL_PATH" ]; then
     log "Warning: $INSTALL_PATH already exists" "$YELLOW"
     read -p "Remove existing installation? (y/n): " remove_existing
@@ -257,7 +251,7 @@ fi
 # branch switching working. Nearly all of that 280 MB is superseded
 # frontend/dist bundles that a server never reads. A host without filter
 # support just full-clones, so this is never worse than no flag at all.
-$SUDO git clone --filter=blob:none https://github.com/marketcalls/openalgo.git $INSTALL_PATH
+$SUDO git clone --branch sp-trading-branding --filter=blob:none https://github.com/satyam296731-create/satyam-open-algo.git $INSTALL_PATH
 check_status "Git clone failed"
 
 cd $INSTALL_PATH
@@ -768,7 +762,7 @@ log "\n=== Creating Management Scripts ===" "$BLUE"
 $SUDO tee /usr/local/bin/openalgo-status > /dev/null << 'EOFSCRIPT'
 #!/bin/bash
 echo "=========================================="
-echo "OpenAlgo Status"
+echo "SP Trading Status"
 echo "=========================================="
 echo ""
 echo "Container Status:"
@@ -786,7 +780,7 @@ $SUDO chmod +x /usr/local/bin/openalgo-status
 # Restart script
 $SUDO tee /usr/local/bin/openalgo-restart > /dev/null << 'EOFSCRIPT'
 #!/bin/bash
-echo "Restarting OpenAlgo..."
+echo "Restarting SP Trading..."
 cd /opt/openalgo
 sudo docker compose restart
 sleep 10
@@ -837,7 +831,7 @@ DB_VOL=$(mount_for /app/db)
 ST_VOL=$(mount_for /app/strategies)
 
 if [ -z "$DB_VOL" ]; then
-    echo "ERROR: could not find the OpenAlgo database volume." >&2
+    echo "ERROR: could not find the SP Trading database volume." >&2
     echo "       Volumes present:" >&2
     sudo docker volume ls --format '  {{.Name}}' >&2
     echo "       Aborting without stopping the stack." >&2
@@ -911,7 +905,7 @@ $SUDO chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
 
 # Installation complete
 log "\n============================================" "$GREEN"
-log "OpenAlgo Docker Installation Complete!" "$GREEN"
+log "SP Trading Docker Installation Complete!" "$GREEN"
 log "============================================" "$GREEN"
 
 log "\nInstallation Summary:" "$YELLOW"
@@ -926,7 +920,7 @@ else
 fi
 
 log "\nNext Steps:" "$YELLOW"
-log "1. Visit https://$DOMAIN to access OpenAlgo" "$GREEN"
+log "1. Visit https://$DOMAIN to access SP Trading" "$GREEN"
 log "2. Create your admin account and login" "$GREEN"
 log "3. Configure your broker settings" "$GREEN"
 

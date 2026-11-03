@@ -13,6 +13,7 @@
 
 import { render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { useThemeStore } from '@/stores/themeStore'
 import { CandleViz } from './CandleViz'
 
 interface SeriesStub {
@@ -141,6 +142,7 @@ beforeEach(() => {
   harness.charts.length = 0
   harness.createChart.mockClear()
   harness.formed.elements = null
+  useThemeStore.setState({ mode: 'light', appMode: 'live' })
 })
 
 describe('CandleViz', () => {
@@ -276,7 +278,7 @@ describe('CandleViz', () => {
     expect(harness.createChart).not.toHaveBeenCalled()
   })
 
-  it('carries exactly one OpenAlgo mark, the one the engine draws', async () => {
+  it('carries exactly one SP Trading mark, the one the engine draws', async () => {
     // The engine draws a corner mark by default. A host that adds its own as a
     // primitive on top of it gets two, stacked in the same corner, which is
     // what this card did. Configuring the one that is already there is the fix
@@ -287,10 +289,19 @@ describe('CandleViz', () => {
 
     const chart = harness.charts[0]
     const branding = chart.options.branding as Record<string, unknown>
-    expect(branding.src).toBe('/images/openalgo-glyph.svg')
+    expect(branding.src).toBe('/images/sp-trading-mark-light.png')
     expect(branding.position).toBe('bottom-left')
-    expect(branding.label).toBe('OpenAlgo Charts')
+    expect(branding.label).toBe('SP Trading')
     // No second mark, which is the whole point.
     expect(chart.primitives).toHaveLength(0)
+  })
+
+  it('uses the dark mark when the chart is in dark mode', async () => {
+    useThemeStore.setState({ mode: 'dark' })
+    render(<CandleViz spec={SPEC} title="RELIANCE NSE D" />)
+    await waitFor(() => expect(harness.charts).toHaveLength(1))
+
+    const branding = harness.charts[0].options.branding as Record<string, unknown>
+    expect(branding.src).toBe('/images/sp-trading-mark-dark.png')
   })
 })

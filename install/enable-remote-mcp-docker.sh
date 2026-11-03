@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# OpenAlgo Remote MCP enabler — Docker variant
+# SP Trading Remote MCP enabler — Docker variant
 # ============================================================================
 # Run AFTER a successful install via install-docker.sh or
 # install-docker-multi-custom-ssl.sh. Detects Docker Compose stacks
@@ -61,7 +61,7 @@ fi
 # ---------------------------------------------------------------------------
 INSTALL_BASE="${INSTALL_BASE:-/opt/openalgo}"
 
-log "\n[1/5] Detecting OpenAlgo Docker stacks..." "$BLUE"
+log "\n[1/5] Detecting SP Trading Docker stacks..." "$BLUE"
 log "Looking under: $INSTALL_BASE" "$YELLOW"
 
 mapfile -t STACK_DIRS < <(find "$INSTALL_BASE" -maxdepth 2 -name "docker-compose.yaml" -o -name "docker-compose.yml" 2>/dev/null \
@@ -283,8 +283,8 @@ $(printf '%b' "${GREEN}=========================================================
     1. Point your client at $MCP_URL/mcp
     2. Complete the OAuth dance — DCR happens automatically
     3. Approve the new client at /admin/remote-mcp on the dashboard
-       (sign in to OpenAlgo first)
-    4. Sign in to OpenAlgo when prompted to authorize the requested scopes
+       (sign in to SP Trading first)
+    4. Sign in to SP Trading when prompted to authorize the requested scopes
 
   Order placement is OFF by default. To enable on this instance:
     sudo sed -i "s|MCP_OAUTH_WRITE_SCOPE_ENABLED.*|MCP_OAUTH_WRITE_SCOPE_ENABLED = 'True'|" $ENV_FILE

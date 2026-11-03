@@ -316,7 +316,7 @@ export function PayoffChart({
       y: 0,
       xref: 'paper',
       yref: 'paper',
-      text: 'openalgo.in',
+      text: 'SP Trading',
       showarrow: false,
       xanchor: 'right',
       yanchor: 'top',

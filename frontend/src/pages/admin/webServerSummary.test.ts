@@ -43,7 +43,7 @@ describe('webServerRows on the default eventlet install', () => {
   it('still shows what eventlet does have', () => {
     expect(rows['Open streams']).toBe('0')
     expect(rows['Browser sessions']).toBe('1')
-    expect(rows['Market data proxy']).toBe('Separate process started by OpenAlgo')
+    expect(rows['Market data proxy']).toBe('Separate process started by SP Trading')
     expect(rows['Broker connections']).toBe('None opened yet')
     expect(rows['Process threads']).toBe('17')
   })
@@ -149,7 +149,7 @@ describe('webServerRows on a server from before these fields', () => {
 
 describe('the market data proxy', () => {
   it.each([
-    ['subprocess', 'Separate process started by OpenAlgo'],
+    ['subprocess', 'Separate process started by SP Trading'],
     ['thread', 'Inside the OpenAlgo process'],
     ['external', 'Separate service (Docker or standalone mode)'],
     [null, 'Not detected'],

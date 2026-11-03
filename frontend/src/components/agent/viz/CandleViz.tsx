@@ -40,6 +40,7 @@
 
 import type { Bar, Chart, SeriesStyle, SeriesType } from 'openalgo-charts'
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { brandMarkSrc } from '@/lib/branding'
 import { cn } from '@/lib/utils'
 import { useThemeStore } from '@/stores/themeStore'
 import { asNumber, asRecord, asText, parseBars } from './spec'
@@ -289,12 +290,10 @@ export function CandleViz({ spec, title, source, variant = 'figure', className }
         // host that adds its own gets two marks stacked in the corner. This
         // configures the one that is already there.
         //
-        // The glyph, not the app icon: that asset is a full-bleed plate whose
-        // mark fills under half of it, so scaling it up scales the padding too.
-        // Sized proportionally to the card, because a mark sized for a full
-        // screen would sit on the candles rather than under them.
+        // Use the cropped mark asset rather than the full app icon, which has
+        // enough padding to leave it too small at this watermark size.
         branding: {
-          src: '/images/openalgo-glyph.svg',
+          src: brandMarkSrc(mode, appMode),
           position: 'bottom-left',
           height: inline ? 15 : 22,
           padding: 3,
@@ -302,9 +301,8 @@ export function CandleViz({ spec, title, source, variant = 'figure', className }
           opacity: 0.8,
           // Mark alone at rest; the wording unrolls to its right on hover, so
           // it names itself when looked at without occupying the corner always.
-          label: 'OpenAlgo Charts',
+          label: 'SP Trading',
           labelColor: mode === 'dark' || appMode === 'analyzer' ? '#e4e8f4' : '#3c4354',
-          href: 'https://openalgo.in',
         },
       })
       instance = created

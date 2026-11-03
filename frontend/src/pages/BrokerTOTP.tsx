@@ -536,7 +536,7 @@ export default function BrokerTOTP() {
                   Back to Broker Selection
                 </Link>
                 <a
-                  href="https://docs.openalgo.in"
+                  href="https://github.com/satyam296731-create/satyam-open-algo/blob/sp-trading-branding/docs/INDEX.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline inline-flex items-center gap-1"

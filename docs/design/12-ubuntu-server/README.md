@@ -128,7 +128,7 @@ sudo nano /etc/systemd/system/openalgo.service
 
 ```ini
 [Unit]
-Description=OpenAlgo Trading Platform
+Description=SP Trading Platform
 After=network.target
 
 [Service]

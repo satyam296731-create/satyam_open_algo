@@ -26,7 +26,7 @@ const WEB_SERVER_NAMES: Record<string, string> = {
 }
 
 const PROXY_MODES: Record<string, string> = {
-  subprocess: 'Separate process started by OpenAlgo',
+  subprocess: 'Separate process started by SP Trading',
   thread: 'Inside the OpenAlgo process',
   external: 'Separate service (Docker or standalone mode)',
 }

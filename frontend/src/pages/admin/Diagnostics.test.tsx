@@ -98,7 +98,7 @@ describe('Diagnostics web server card', () => {
   it('shows a default eventlet install plainly, with nothing about threads', async () => {
     const card = await renderWith(EVENTLET_DEFAULT)
     expect(shownFor(card, 'Web server')).toBe('eventlet (the default)')
-    expect(shownFor(card, 'Market data proxy')).toBe('Separate process started by OpenAlgo')
+    expect(shownFor(card, 'Market data proxy')).toBe('Separate process started by SP Trading')
     expect(card.queryByText('Request threads')).toBeNull()
     expect(card.queryByText('Started by launcher')).toBeNull()
     expect(card.queryByRole('note')).toBeNull()

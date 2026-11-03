@@ -1,27 +1,27 @@
 #!/bin/bash
-# OpenAlgo: move a systemd service onto the web server launcher.
+# SP Trading: move a systemd service onto the web server launcher.
 #
-# OpenAlgo can run on two web servers: eventlet (the default) and gthread.
+# SP Trading can run on two web servers: eventlet (the default) and gthread.
 # A service written by install.sh or install-multi.sh starts eventlet
 # directly. This script points it at install/openalgo-gunicorn.sh instead,
 # which reads OPENALGO_WORKER_CLASS from that install's .env at every start.
 # After that, switching between the two is one line in .env plus a restart.
 #
 # For each service it:
-#   1. finds the service file and checks that an OpenAlgo installer wrote it
+#   1. finds the service file and checks that an SP Trading installer wrote it
 #      (a customised file is left alone, with an explanation);
 #   2. saves a copy next to it as <file>.pre-launcher-<date>;
 #   3. points ExecStart at the launcher (falling back to the previous gunicorn
 #      command when the launcher is missing, as after a code rollback) and
 #      gives systemd enough time to let a stop finish;
-#   4. restarts OpenAlgo and checks that the service is running, the page
+#   4. restarts SP Trading and checks that the service is running, the page
 #      answers, the live update channel answers, and the web server is the
 #      one .env asks for;
 #   5. if any check fails, puts the saved copy back, restarts and checks again.
 #
-# This is the only thing that rewrites an OpenAlgo service file for this
+# This is the only thing that rewrites an SP Trading service file for this
 # purpose. It runs only when you run it, or when the updater runs it because
-# .env asks for gthread. It refuses to restart OpenAlgo during the trading
+# .env asks for gthread. It refuses to restart SP Trading during the trading
 # day (09:00 to 23:30 IST) unless you add --force.
 #
 # Usage:
@@ -29,8 +29,8 @@
 #
 #   --to gthread|eventlet   also set OPENALGO_WORKER_CLASS in that install's .env
 #   --service NAME          the systemd service (default: found automatically)
-#   --path DIR              the OpenAlgo folder, to pick a service by folder
-#   --all                   every OpenAlgo service on this server, one at a time
+#   --path DIR              the SP Trading folder, to pick a service by folder
+#   --all                   every SP Trading service on this server, one at a time
 #   --restore               put back the service file saved before the switch
 #   --dry-run               show what would change, change nothing
 #   --force                 allow a restart between 09:00 and 23:30 IST
@@ -39,7 +39,7 @@
 #                           and the service does not use the launcher yet
 #
 # Exit status: 0 done (or nothing to do), 1 the switch failed and the previous
-# service file is back and running, 2 OpenAlgo is not running and needs a
+# service file is back and running, 2 SP Trading is not running and needs a
 # person, 3 refused (trading hours, customised file, missing pieces), 4 usage.
 
 set -u
@@ -193,7 +193,7 @@ parse_gunicorn_command() {
             --worker-class|-k) OLD_WORKER="$value" ;;
             --workers|-w)
                 if [ "$value" != "1" ]; then
-                    PARSE_PROBLEM="it runs $value workers; OpenAlgo needs exactly one"
+                    PARSE_PROBLEM="it runs $value workers; SP Trading needs exactly one"
                     return
                 fi ;;
             --bind|-b) OLD_BIND="$value" ;;
@@ -306,7 +306,7 @@ health_check() {
             if ! systemctl is-active --quiet "$service"; then
                 HEALTH_PROBLEM="the service is not running"
             elif ! http_get "$bind" /auth/check-setup > /dev/null 2>&1; then
-                HEALTH_PROBLEM="the OpenAlgo page does not answer"
+                HEALTH_PROBLEM="the SP Trading page does not answer"
             elif ! http_get "$bind" "/socket.io/?EIO=4&transport=polling" 2>/dev/null | grep -q '"sid"'; then
                 HEALTH_PROBLEM="the live update channel does not answer"
             elif [ -n "$expected" ] && ! running_worker_class "$service" | grep -q -- "--worker-class $expected"; then
@@ -343,7 +343,7 @@ refuse_during_trading_day() {
     fi
     local now="${CLOCK_HHMM:-$(TZ=Asia/Kolkata date +%H%M)}"
     warn "It is ${now:0:2}:${now:2:2} IST, inside the trading day (09:00 to 23:30 IST, which"
-    warn "includes the MCX evening session). This restarts OpenAlgo, which pauses live"
+    warn "includes the MCX evening session). This restarts SP Trading, which pauses live"
     warn "orders, strategies and market data for up to a minute. Run it again after"
     warn "23:30 IST, or add --force if you are sure nothing is trading."
     return 1
@@ -359,7 +359,7 @@ confirm() {
 
 # ---------------------------------------------------------------- discovery
 
-# Print the unit files of OpenAlgo services, one per line.
+# Print the unit files of SP Trading services, one per line.
 find_openalgo_units() {
     local file workdir
     for file in "$SYSTEMD_DIR"/*.service; do
@@ -443,7 +443,7 @@ switch_one() {
     say "Service $service ($workdir)"
 
     if [ ! -f "$workdir/$LAUNCHER_REL" ] || [ ! -f "$workdir/$RESOLVER_REL" ]; then
-        warn "  This install does not have the launcher yet. Update OpenAlgo first, then run this again."
+        warn "  This install does not have the launcher yet. Update SP Trading first, then run this again."
         return 3
     fi
 
@@ -472,17 +472,17 @@ switch_one() {
         previous="$(requested_worker "$workdir" "$venv")"
         set_env_worker "$workdir" "$venv" "$TO" || return 3
         if restart_and_check "$service" "$bind" "$TO"; then
-            say "  OpenAlgo is running on the $TO web server."
+            say "  SP Trading is running on the $TO web server."
             return 0
         fi
-        warn "  OpenAlgo did not come back on the $TO web server ($HEALTH_PROBLEM)."
+        warn "  SP Trading did not come back on the $TO web server ($HEALTH_PROBLEM)."
         journal_tail "$service" >&2
         set_env_worker "$workdir" "$venv" "$previous" > /dev/null || true
         if restart_and_check "$service" "$bind" "$previous"; then
             warn "  It has been put back on the $previous web server and is running."
             return 1
         fi
-        warn "  OpenAlgo is not running. Check: sudo journalctl -u $service -n 100"
+        warn "  SP Trading is not running. Check: sudo journalctl -u $service -n 100"
         return 2
     fi
 
@@ -493,13 +493,13 @@ switch_one() {
     fi
     if tr -d '\r' < "$unit" | grep -qE '^[[:space:]]*ExecReload='; then
         warn "  Left unchanged: the service file has an ExecReload line. A reload would start"
-        warn "  a second OpenAlgo worker, so remove that line first, then run this again."
+        warn "  a second SP Trading worker, so remove that line first, then run this again."
         return 3
     fi
     cmd="$(exec_start_joined "$unit")"
     parse_gunicorn_command "$cmd"
     if [ -n "$PARSE_PROBLEM" ]; then
-        warn "  Left unchanged: $PARSE_PROBLEM, so it looks customised. OpenAlgo keeps its"
+        warn "  Left unchanged: $PARSE_PROBLEM, so it looks customised. SP Trading keeps its"
         warn "  current web server. To switch, change ExecStart by hand to call"
         warn "  $workdir/$LAUNCHER_REL (see docs/gthread/README.md)."
         return 3
@@ -515,12 +515,12 @@ switch_one() {
     # The command this file ran before the switch. If the code is rolled back
     # to a release without the launcher before --restore is run, ExecStart
     # would name a missing file and systemd would restart it in a loop; this
-    # starts OpenAlgo the old way instead.
+    # starts SP Trading the old way instead.
     previous="$OLD_VENV/bin/gunicorn --worker-class ${OLD_WORKER:-eventlet} -w 1 --bind $OLD_BIND --timeout $OLD_TIMEOUT --log-level $OLD_LOG_LEVEL"
     [ -n "$OLD_GRACEFUL" ] && previous="$previous --graceful-timeout $OLD_GRACEFUL"
     [ -n "$OLD_TMP_DIR" ] && previous="$previous --worker-tmp-dir $OLD_TMP_DIR"
     previous="$previous app:app"
-    execline="/bin/bash -c 'if [ -f $workdir/$LAUNCHER_REL ]; then exec $launch; fi; echo \"$LAUNCHER_REL is missing, so OpenAlgo starts the way it did before the switch. The service file from before the switch is named in the comment above ExecStart.\" >&2; source $OLD_VENV/bin/activate; exec $previous'"
+    execline="/bin/bash -c 'if [ -f $workdir/$LAUNCHER_REL ]; then exec $launch; fi; echo \"$LAUNCHER_REL is missing, so SP Trading starts the way it did before the switch. The service file from before the switch is named in the comment above ExecStart.\" >&2; source $OLD_VENV/bin/activate; exec $previous'"
     add_timeout=""
     stop_window_ok "$unit" || add_timeout="$STOP_WINDOW"
     backup="$unit.pre-launcher-$TIMESTAMP"
@@ -566,7 +566,7 @@ switch_one() {
         say "  Would save the current file as $backup and change it like this:"
         diff -u "$unit" "$rendered" | sed 's/^/    /'
         [ -n "$TO" ] && set_env_worker "$workdir" "$OLD_VENV" "$TO"
-        say "  OpenAlgo would then start on the $expected web server."
+        say "  SP Trading would then start on the $expected web server."
         rm -rf "$tmpdir"
         return 0
     fi
@@ -598,12 +598,12 @@ switch_one() {
     say "  Saved the previous service file as $backup"
 
     if restart_and_check "$service" "$OLD_BIND" "$expected"; then
-        say "  OpenAlgo is running on the $expected web server."
+        say "  SP Trading is running on the $expected web server."
         say "  To switch later: set OPENALGO_WORKER_CLASS in $workdir/.env and restart $service."
         return 0
     fi
 
-    warn "  OpenAlgo did not start correctly through the launcher ($HEALTH_PROBLEM)."
+    warn "  SP Trading did not start correctly through the launcher ($HEALTH_PROBLEM)."
     warn "  Last lines of its log:"
     journal_tail "$service" >&2
     as_root cp -p "$backup" "$unit"
@@ -611,11 +611,11 @@ switch_one() {
         set_env_worker "$workdir" "$OLD_VENV" "$previous" > /dev/null || true
     fi
     if restart_and_check "$service" "$OLD_BIND" "$OLD_WORKER"; then
-        warn "  OpenAlgo has been put back on its previous service file and is running"
+        warn "  SP Trading has been put back on its previous service file and is running"
         warn "  on the ${OLD_WORKER:-previous} web server. The launcher is not in use."
         return 1
     fi
-    warn "  OpenAlgo is not running on the previous service file either."
+    warn "  SP Trading is not running on the previous service file either."
     journal_tail "$service" >&2
     warn "  To put the previous file back by hand:"
     warn "    sudo cp $backup $unit && sudo systemctl daemon-reload && sudo systemctl restart $service"
@@ -662,10 +662,10 @@ restore_one() {
         warn "  next update will switch $service back to the gthread web server."
     fi
     if restart_and_check "$service" "$bind" "$expected"; then
-        say "  Put back $backup. OpenAlgo is running on the ${expected:-previous} web server."
+        say "  Put back $backup. SP Trading is running on the ${expected:-previous} web server."
         return 0
     fi
-    warn "  OpenAlgo is not running after putting back $backup ($HEALTH_PROBLEM)."
+    warn "  SP Trading is not running after putting back $backup ($HEALTH_PROBLEM)."
     journal_tail "$service" >&2
     return 2
 }
@@ -685,7 +685,7 @@ fi
 
 if [ -z "$UNITS" ]; then
     [ "$CHECK" -eq 1 ] && exit 3
-    warn "No OpenAlgo service was found in $SYSTEMD_DIR."
+    warn "No SP Trading service was found in $SYSTEMD_DIR."
     warn "Use --service NAME (for example --service openalgo) to name it."
     exit 3
 fi
@@ -693,7 +693,7 @@ fi
 COUNT="$(printf '%s\n' "$UNITS" | grep -c .)"
 if [ "$COUNT" -gt 1 ] && [ "$ALL" -eq 0 ]; then
     [ "$CHECK" -eq 1 ] && exit 3
-    warn "More than one OpenAlgo service is installed on this server:"
+    warn "More than one SP Trading service is installed on this server:"
     printf '%s\n' "$UNITS" | while read -r unit; do warn "  $(basename "$unit" .service)"; done
     warn "Name one with --service NAME, or use --all to switch them one at a time."
     exit 3
@@ -733,7 +733,7 @@ done
 
 if [ "$ALL" -eq 1 ] && [ "$COUNT" -gt 1 ] && [ "$RESTORE" -eq 0 ] && [ "$GTHREAD_COUNT" -gt 0 ]; then
     say ""
-    say "$GTHREAD_COUNT OpenAlgo service(s) on this server use gthread, 64 request threads each"
+    say "$GTHREAD_COUNT SP Trading service(s) on this server use gthread, 64 request threads each"
     say "($((GTHREAD_COUNT * 64)) in total)."
 fi
 exit "$STATUS"

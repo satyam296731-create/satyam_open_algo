@@ -7,7 +7,7 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# OpenAlgo Domain Change Banner
+# SP Trading Domain Change Banner
 echo -e "${BLUE}"
 echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
 echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
@@ -18,8 +18,8 @@ echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  �
 echo "                      DOMAIN  CHANGE  SCRIPT                             "
 echo -e "${NC}"
 
-# OpenAlgo Domain Change Script
-# Changes the domain for an existing OpenAlgo server deployment.
+# SP Trading Domain Change Script
+# Changes the domain for an existing SP Trading server deployment.
 # Updates .env, Nginx config, and obtains a new SSL certificate.
 
 # Create logs directory if it doesn't exist
@@ -47,7 +47,7 @@ check_status() {
 }
 
 # Start logging
-log_message "Starting OpenAlgo domain change log at: $LOG_FILE" "$BLUE"
+log_message "Starting SP Trading domain change log at: $LOG_FILE" "$BLUE"
 log_message "----------------------------------------" "$BLUE"
 
 # ============================================
@@ -106,10 +106,10 @@ if [ -f "$SIMPLE_PATH/.env" ]; then
     SOCKET_FILE="$SIMPLE_PATH/openalgo.sock"
     SERVICE_NAME="openalgo"
     ENV_FILE="$OPENALGO_PATH/.env"
-    log_message "Found OpenAlgo install at $SIMPLE_PATH" "$GREEN"
+    log_message "Found SP Trading install at $SIMPLE_PATH" "$GREEN"
 else
     if [ ! -d "$DEPLOY_BASE" ]; then
-        log_message "Error: No OpenAlgo deployment found." "$RED"
+        log_message "Error: No SP Trading deployment found." "$RED"
         log_message "Looked at $SIMPLE_PATH and $DEPLOY_BASE" "$YELLOW"
         log_message "This script is for server deployments installed via install.sh" "$YELLOW"
         exit 1
@@ -125,7 +125,7 @@ else
     done
 
     if [ ${#DEPLOYMENTS[@]} -eq 0 ]; then
-        log_message "Error: No OpenAlgo deployments found in $SIMPLE_PATH or $DEPLOY_BASE" "$RED"
+        log_message "Error: No SP Trading deployments found in $SIMPLE_PATH or $DEPLOY_BASE" "$RED"
         exit 1
     fi
 
@@ -717,7 +717,7 @@ if [ -n "$BROKER_NAME" ]; then
     log_message "" ""
 fi
 
-log_message "Your OpenAlgo instance is now available at:" "$GREEN"
+log_message "Your SP Trading instance is now available at:" "$GREEN"
 log_message "  https://$NEW_DOMAIN" "$GREEN"
 log_message "" ""
 

@@ -15,6 +15,7 @@ import {
 } from '@xyflow/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 import { showToast } from '@/utils/toast'
 import '@xyflow/react/dist/style.css'
 import {
@@ -565,8 +566,8 @@ function FlowEditorContent() {
       <div className="flex h-screen flex-col bg-background text-foreground">
         <div className="h-12 border-b border-border flex items-center px-2 bg-card/50">
           <div className="flex items-center gap-2 px-2">
-            <img src="/images/android-chrome-192x192.png" alt="OpenAlgo" className="w-6 h-6" />
-            <span className="font-semibold text-sm">openalgo</span>
+            <BrandLogo className="w-6 h-6 object-contain" />
+            <span className="font-semibold text-sm">SP Trading</span>
           </div>
           <div className="flex-1" />
         </div>
@@ -590,8 +591,8 @@ function FlowEditorContent() {
       <div className="flex h-screen flex-col bg-background text-foreground">
         <div className="h-12 border-b border-border flex items-center px-2 bg-card/50">
           <div className="flex items-center gap-2 px-2">
-            <img src="/images/android-chrome-192x192.png" alt="OpenAlgo" className="w-6 h-6" />
-            <span className="font-semibold text-sm">openalgo</span>
+            <BrandLogo className="w-6 h-6 object-contain" />
+            <span className="font-semibold text-sm">SP Trading</span>
           </div>
           <div className="flex-1" />
         </div>
@@ -624,8 +625,8 @@ function FlowEditorContent() {
         {/* Top Header Bar */}
         <div className="h-12 border-b border-border flex items-center px-2 bg-card/50">
           <div className="flex items-center gap-2 px-2">
-            <img src="/images/android-chrome-192x192.png" alt="OpenAlgo" className="w-6 h-6" />
-            <span className="font-semibold text-sm">openalgo</span>
+            <BrandLogo className="w-6 h-6 object-contain" />
+            <span className="font-semibold text-sm">SP Trading</span>
           </div>
           <div className="flex-1" />
         </div>
@@ -642,8 +643,8 @@ function FlowEditorContent() {
       <div className="h-12 border-b border-border flex items-center px-2 bg-card/50">
         {/* Left: Logo */}
         <div className="flex items-center gap-2 px-2">
-          <img src="/images/android-chrome-192x192.png" alt="OpenAlgo" className="w-6 h-6" />
-          <span className="font-semibold text-sm">openalgo</span>
+          <BrandLogo className="w-6 h-6 object-contain" />
+          <span className="font-semibold text-sm">SP Trading</span>
         </div>
 
         {/* Center: Workflow Name */}
@@ -733,7 +734,7 @@ function FlowEditorContent() {
               ))}
               <DropdownMenuItem asChild>
                 <a
-                  href="https://docs.openalgo.in"
+                  href="https://github.com/satyam296731-create/satyam-open-algo/blob/sp-trading-branding/docs/INDEX.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"

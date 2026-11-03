@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to OpenAlgo will be documented in this file.
+All notable changes to SP Trading, a customized build based on OpenAlgo, will be documented in this file.
 
 Each release adds a stanza here summarising what changed and who contributed.
 The full notes for a release, with commit SHAs and the reasoning behind each
@@ -10,6 +10,10 @@ fix, live in [docs/releases](releases/).
 
 ### Changed
 
+- Rebranded the trader-facing interface and installer output as SP Trading,
+  added theme-aware SP Trading logos, and pointed source-based installers at
+  the SP Trading repository. OpenAlgo source attribution and license notices
+  remain in place.
 - The Scalping Terminal charts are now drawn by openalgo-charts, the engine
   behind the /trading chart, in place of the separate library they used
   before. They look and read like /trading: the same candle and volume

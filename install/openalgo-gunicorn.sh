@@ -1,7 +1,7 @@
 #!/bin/bash
-# OpenAlgo gunicorn launcher.
+# SP Trading gunicorn launcher.
 #
-# Starts OpenAlgo under gunicorn on the web server chosen in .env with
+# Starts SP Trading under gunicorn on the web server chosen in .env with
 # OPENALGO_WORKER_CLASS: eventlet (the default) or gthread. The setting is read
 # at every start, so once a service uses this launcher, switching between the
 # two is one line in .env plus a restart.
@@ -15,7 +15,7 @@
 #
 #   --venv DIR              Python environment that holds gunicorn (required)
 #   --bind ADDR             unix:/path/openalgo.sock or HOST:PORT (required)
-#   --app-dir DIR           OpenAlgo folder (default: the folder above install/)
+#   --app-dir DIR           SP Trading folder (default: the folder above install/)
 #   --env-file FILE         settings file (default: APP_DIR/.env)
 #   --proxy-mode MODE       subprocess (systemd, the default) or external (Docker)
 #   --log-level LEVEL       debug, info (default), warning, error or critical
@@ -48,7 +48,7 @@ WORKER_TMP_DIR=""
 DRY_RUN=0
 
 say() {
-    printf '[OpenAlgo] %s\n' "$*" >&2
+    printf '[SP Trading] %s\n' "$*" >&2
 }
 
 fail() {
@@ -62,7 +62,7 @@ Usage: /bin/bash install/openalgo-gunicorn.sh --venv DIR --bind ADDR [options]
 
   --venv DIR              Python environment that holds gunicorn (required)
   --bind ADDR             unix:/path/openalgo.sock or HOST:PORT (required)
-  --app-dir DIR           OpenAlgo folder (default: the folder above install/)
+  --app-dir DIR           SP Trading folder (default: the folder above install/)
   --env-file FILE         settings file (default: APP_DIR/.env)
   --proxy-mode MODE       subprocess (systemd, the default) or external (Docker)
   --log-level LEVEL       debug, info (default), warning, error or critical
@@ -99,7 +99,7 @@ while [ $# -gt 0 ]; do
 done
 
 [ -n "$VENV" ] || fail "Missing --venv: the Python environment that holds gunicorn."
-[ -n "$BIND" ] || fail "Missing --bind: the socket or address OpenAlgo listens on."
+[ -n "$BIND" ] || fail "Missing --bind: the socket or address SP Trading listens on."
 case "$PROXY_MODE" in
     subprocess|external) ;;
     *) fail "--proxy-mode must be subprocess or external, not '$PROXY_MODE'." ;;
@@ -111,10 +111,10 @@ esac
 case "$TIMEOUT" in ''|*[!0-9]*) fail "--timeout must be a whole number of seconds." ;; esac
 case "$GRACEFUL" in ''|*[!0-9]*) fail "--graceful-timeout must be a whole number of seconds." ;; esac
 
-cd "$APP_DIR" 2>/dev/null || fail "The OpenAlgo folder $APP_DIR does not exist."
+cd "$APP_DIR" 2>/dev/null || fail "The SP Trading folder $APP_DIR does not exist."
 APP_DIR="$(pwd)"
 [ -n "$ENV_FILE" ] || ENV_FILE="$APP_DIR/.env"
-[ -f "$APP_DIR/app.py" ] || fail "$APP_DIR does not look like an OpenAlgo folder (app.py is missing)."
+[ -f "$APP_DIR/app.py" ] || fail "$APP_DIR does not look like an SP Trading folder (app.py is missing)."
 [ -x "$VENV/bin/gunicorn" ] || fail "gunicorn is not installed in $VENV. Run the updater to reinstall the dependencies."
 
 # Read OPENALGO_WORKER_CLASS without Python, for when the helper cannot run.
@@ -214,7 +214,7 @@ fi
 ARGS+=(app:app)
 
 if [ "$WORKER" = "gthread" ]; then
-    say "Starting the gthread web server with $GTHREAD_THREADS request threads. To go back, set OPENALGO_WORKER_CLASS = 'eventlet' in .env and restart OpenAlgo."
+    say "Starting the gthread web server with $GTHREAD_THREADS request threads. To go back, set OPENALGO_WORKER_CLASS = 'eventlet' in .env and restart SP Trading."
 else
     say "Starting the eventlet web server."
 fi

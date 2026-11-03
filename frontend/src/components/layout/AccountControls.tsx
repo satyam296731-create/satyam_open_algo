@@ -185,7 +185,7 @@ export function AccountControls({ variant = 'navbar' }: { variant?: 'navbar' | '
           )}
           <DropdownMenuItem asChild>
             <a
-              href="https://docs.openalgo.in"
+              href="https://github.com/satyam296731-create/satyam-open-algo/blob/sp-trading-branding/docs/INDEX.md"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2"

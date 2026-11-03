@@ -99,6 +99,7 @@ import { mergeAlertRuntime } from './alertRuntime'
 import { csvOptions, type DataExportOptions } from './chartDataExport'
 import { chartMotionOptions } from './chartMotion'
 import { CHART_READY, type ChartStateView, chartLoadFailed, chartNoData } from './chartState'
+import { brandMarkSrc } from '@/lib/branding'
 import {
   type ComparisonScale,
   comparisonScaleOf,
@@ -537,7 +538,7 @@ export interface TerminalComparisonState {
 }
 
 export interface BrandingLink {
-  href: string
+  href?: string
   label: string
 }
 
@@ -2476,6 +2477,16 @@ export class TradingTerminal {
     this.chart = createChart(this.container, {
       priceAxisWidth: 78,
       theme,
+      branding: {
+        position: 'bottom-left',
+        margin: 14,
+        opacity: 1,
+        padding: 8,
+        src: brandMarkSrc(mode, appMode),
+        label: 'Chart by SP Trading',
+        href: undefined,
+        id: 'chart-branding',
+      },
       // No `navigation` override. The engine's default is `mousePan: 'both'`,
       // and this used to pin it to `'horizontal'`, so dragging the plot moved
       // through time and never through price. It was set with the 2.4.5
@@ -2839,13 +2850,13 @@ export class TradingTerminal {
         brandingOptions?(): false | { href?: string; label?: string }
       } | null
     )?.brandingOptions?.()
-    if (!options || typeof options.href !== 'string' || !/^https?:\/\//i.test(options.href))
-      return null
+    if (!options) return null
     const label =
       typeof options.label === 'string' && options.label.trim()
         ? options.label.trim()
         : 'Chart branding'
-    return { href: options.href, label }
+    if (options.href === undefined) return { label }
+    return /^https?:\/\//i.test(options.href) ? { href: options.href, label } : null
   }
 
   /**

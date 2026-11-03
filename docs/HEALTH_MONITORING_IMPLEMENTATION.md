@@ -197,7 +197,7 @@ HEALTH_THREAD_CRITICAL_THRESHOLD=100
     "status": "pass",
     "version": "1.0",
     "serviceId": "openalgo",
-    "description": "OpenAlgo Trading Platform"
+    "description": "SP Trading Platform"
 }
 ```
 
@@ -311,7 +311,7 @@ for f in files:
   "status": "pass",
   "version": "1.0",
   "serviceId": "openalgo",
-  "description": "OpenAlgo Trading Platform"
+  "description": "SP Trading Platform"
 }
 ```
 
@@ -321,7 +321,7 @@ for f in files:
   "status": "pass",
   "version": "1.0",
   "serviceId": "openalgo",
-  "description": "OpenAlgo Trading Platform",
+  "description": "SP Trading Platform",
   "checks": {
     "database:connectivity": [
       {

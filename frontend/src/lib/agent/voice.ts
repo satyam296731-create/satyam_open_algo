@@ -284,13 +284,13 @@ function microphoneRefusal(cause: unknown): string {
   const name = (cause as { name?: string } | null)?.name ?? ''
   // Checked before the permission cases, because an insecure page never gets
   // as far as asking: the browser refuses the device outright and the operator
-  // is left toggling a permission that was never the problem. OpenAlgo is
+  // is left toggling a permission that was never the problem. SP Trading is
   // commonly reached on a LAN address over plain http, which is exactly the
   // shape that fails here while localhost works.
   if (!window.isSecureContext || name === 'SecurityError') {
     return (
       'Your browser will not allow the microphone on this address. Open ' +
-      'OpenAlgo at http://127.0.0.1:5000, or set up https for your domain. ' +
+      'SP Trading at http://127.0.0.1:5000, or set up https for your domain. ' +
       'A plain http address that is not on this machine can never use a ' +
       'microphone, whatever the settings say.'
     )

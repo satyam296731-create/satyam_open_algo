@@ -1,4 +1,9 @@
-# OpenAlgo Docker Installation
+# SP Trading Docker Installation
+
+Source-based installer commands in this guide fetch SP Trading from
+`https://github.com/satyam296731-create/satyam-open-algo`. The separate
+`docker-run` quick-start uses the upstream prebuilt OpenAlgo Docker image and
+does not install the customized SP Trading build.
 
 > **Advanced Users**: For multi-instance deployment with custom SSL (wildcard certificates) and Portainer, see [Docker-Multi-SSL-README.md](./Docker-Multi-SSL-README.md)
 
@@ -76,7 +81,7 @@ docker-run.bat setup     # Re-run setup (regenerate keys)
 ./docker-run.sh setup
 ```
 
-### Updating OpenAlgo
+### Updating SP Trading
 
 Database migrations run **automatically** when the container starts.
 
@@ -133,12 +138,12 @@ For **production deployment** on a cloud server with custom domain and SSL certi
 
 ### Quick Start
 
-This script provides a simplified, automated installation of OpenAlgo using Docker on Ubuntu/Debian systems with custom domain and SSL.
+This script provides a simplified, automated installation of SP Trading using Docker on Ubuntu/Debian systems with custom domain and SSL.
 
 ### One-Line Installation
 
 ```bash
-wget https://raw.githubusercontent.com/marketcalls/openalgo/refs/heads/main/install/install-docker.sh && chmod +x install-docker.sh && ./install-docker.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install-docker.sh && chmod +x install-docker.sh && ./install-docker.sh
 ```
 
 ### Prerequisites
@@ -159,7 +164,7 @@ usermod -aG sudo openalgo
 su - openalgo
 
 # Download and run the script
-wget https://raw.githubusercontent.com/marketcalls/openalgo/refs/heads/main/install/install-docker.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install-docker.sh
 chmod +x install-docker.sh
 ./install-docker.sh
 ```
@@ -168,7 +173,7 @@ chmod +x install-docker.sh
 
 ```bash
 # Download and run directly
-wget https://raw.githubusercontent.com/marketcalls/openalgo/refs/heads/main/install/install-docker.sh
+wget https://raw.githubusercontent.com/satyam296731-create/satyam-open-algo/sp-trading-branding/install/install-docker.sh
 chmod +x install-docker.sh
 ./install-docker.sh
 # (Confirm when prompted to proceed as root)
@@ -192,7 +197,7 @@ The script will ask you for:
 2. Installs Docker & Docker Compose
 3. Installs Nginx web server
 4. Installs Certbot for SSL
-5. Clones OpenAlgo repository to `/opt/openalgo`
+5. Clones the SP Trading repository to `/opt/openalgo`
 6. Configures environment variables
 7. Sets up firewall (UFW)
 8. Obtains SSL certificate from Let's Encrypt
@@ -206,7 +211,7 @@ The script will ask you for:
 
 1. Visit `https://yourdomain.com` in your browser
 2. Create your admin account
-3. Login to OpenAlgo
+3. Login to SP Trading
 4. Complete broker authentication using OAuth
 
 ### Management Commands
@@ -264,7 +269,7 @@ sudo docker compose up -d
 | SSL Certificates | `/etc/letsencrypt/live/yourdomain.com/` |
 | Backups | `/opt/openalgo-backups/` |
 
-### Updating OpenAlgo
+### Updating SP Trading
 
 Database migrations run **automatically** when the container starts.
 
@@ -278,7 +283,7 @@ openalgo-backup
 sudo docker compose down
 
 # Pull latest code
-sudo git pull origin main
+sudo git pull origin sp-trading-branding
 
 # Rebuild and restart (migrations run automatically)
 sudo docker compose build --no-cache
@@ -386,7 +391,7 @@ The script automatically configures UFW:
    crontab -e
    # Add: 0 2 * * * /usr/local/bin/openalgo-backup
    ```
-5. **Use strong passwords** for your OpenAlgo account
+5. **Use strong passwords** for your SP Trading account
 6. **Never share broker credentials** with anyone
 7. **Review firewall rules periodically**:
    ```bash
@@ -587,7 +592,7 @@ A: Yes, but you'll need to modify the Nginx configuration manually.
 **Q: Will this work with a subdomain?**
 A: Yes, the script supports both root domains and subdomains.
 
-**Q: Can I run multiple OpenAlgo instances?**
+**Q: Can I run multiple SP Trading instances?**
 A: Not with this script. Each installation assumes it's the only instance.
 
 **Q: How do I change my broker after installation?**
@@ -626,7 +631,7 @@ Contributions are welcome! Please see our [Contributing Guide](../CONTRIBUTING.m
 
 ---
 
-**Note**: This script is designed for fresh server installations. If you have an existing OpenAlgo installation or other applications on the server, please review the script and make necessary adjustments to avoid conflicts.
+**Note**: This script is designed for fresh server installations. If you have an existing SP Trading installation or other applications on the server, please review the script and make necessary adjustments to avoid conflicts.
 
 For production deployments, we strongly recommend:
 1. Using a non-root user

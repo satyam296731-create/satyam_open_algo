@@ -108,6 +108,11 @@ export function usePageTitle() {
 
   useEffect(() => {
     const title = getPageTitle(pathname)
-    document.title = title === 'OpenAlgo' ? 'OpenAlgo' : `${title} | OpenAlgo`
+    document.title =
+      pathname === '/trading'
+        ? 'SP Trading'
+        : title === 'OpenAlgo'
+          ? 'SP Trading'
+          : `${title} | SP Trading`
   }, [pathname])
 }
