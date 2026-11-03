@@ -347,7 +347,7 @@ strategy log viewer reads them, because the runner deliberately writes where the
 Python strategy host already writes rather than inventing a second place an
 operator has to know about.
 
-### Where the orders go, and the one thing this surface does not offer
+### Where the orders go
 
 A run places orders through this platform's own order API with the platform's
 own key, exactly as a hosted Python strategy does. That path reads the
@@ -355,10 +355,15 @@ platform-wide analyzer setting before anything else, so **sandbox mode and
 analyzer mode are honoured by the same code that honours them everywhere else**.
 An engine reports what a script asked for; it never reaches a broker itself.
 
-There is no route, field or flag anywhere on this surface that chooses a
-destination, and a settings body that invents one is refused by name. Where an
-order goes is one question with one answer, decided in the platform's own
-setting, and a second switch here would be a second answer to it.
+There is no route, field or flag on this surface that chooses a destination.
+Where an order goes is decided by the platform's own setting.
+
+The runner remembers where its first accepted order went and checks later
+orders against it. If the platform's analyzer setting changes while the run
+holds a position, the order that detects the change has already been accepted
+at the new destination; the run then stops and names the position in its log.
+Check and close any open position yourself. If the run is flat when the setting
+changes, it follows the platform's new destination and continues.
 
 ### What actually runs
 
@@ -381,27 +386,3 @@ OpenScript is developed as its own open source project so that other platforms
 can adopt it, under Apache-2.0, with a written specification and a conformance
 suite. The language reference, the error catalogue and the integration guides
 live there rather than being restated here.
-
-## Where a run's orders go, and what happens if that changes
-
-A strategy run sends its orders through the platform's own order path, the same
-one every other surface uses, so sandbox mode and analyzer mode are honoured
-without this runner knowing anything about them. It does **not** pass
-`force_live`.
-
-That is a deliberate decision and it has a consequence worth stating plainly.
-The destination is decided per order and not per run, so an operator who turns
-the analyzer on while a strategy is holding a position would send that
-strategy's exits to the sandbox while the broker still holds what its entries
-opened. The platform describes this failure in its own words in
-`services/place_order_service.py`.
-
-So the run watches for it. The destination of the first order the platform
-accepts is remembered, every later order is checked against it, and a run whose
-destination changes underneath it **stops immediately** and says so in its log,
-naming what is open. It does not try to put the position back: the entry is
-where it is, and a run that can no longer reason about what it holds should not
-be sending anything. Whatever is open at that point has to be checked and closed
-by a person.
-
-A run that stays where it started is never interrupted by this.
