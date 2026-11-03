@@ -1,0 +1,1 @@
+function e(e,t,n=`mark`){return`/images/sp-trading-${n}-${e===`dark`||t===`analyzer`?`dark`:`light`}.png`}function t(t,n){return e(t,n,`mark`)}export{t as n,e as t};
