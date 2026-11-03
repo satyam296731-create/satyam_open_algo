@@ -16,6 +16,9 @@ from utils.logging import get_logger
 
 logger = get_logger(__name__)
 
+MULTIQUOTE_BATCH_SIZE = 50
+MULTIQUOTE_OI_THRESHOLD = 10
+
 
 def get_api_response(endpoint, auth, method="GET", payload="", _retry_count=0):
     """
@@ -193,11 +196,9 @@ class BrokerData:
         """
         Get real-time quotes for multiple symbols with automatic batching.
 
-        OI policy: when the total request size is <= OI_THRESHOLD, OI is fetched
-        per-symbol via /data/depth for derivative exchanges only. When the total
-        exceeds OI_THRESHOLD, OI is set to 0 for every symbol — at 10 req/sec
-        the depth calls dominate latency and would push the request well past
-        a usable response time.
+        OI policy: for small requests only, OI is fetched per derivative symbol
+        via /data/depth. Larger requests skip those extra broker calls so quote
+        batches do not fan out into dozens of rate-limited depth requests.
 
         Args:
             symbols: List of dicts with 'symbol' and 'exchange' keys
@@ -207,26 +208,26 @@ class BrokerData:
                   [{'symbol': 'SBIN', 'exchange': 'NSE', 'data': {...}}, ...]
         """
         try:
-            BATCH_SIZE = 50  # Fyers /data/quotes limit per request
-            RATE_LIMIT_DELAY = 0.1  # Delay in seconds between batch API calls
-            OI_THRESHOLD = 100  # Skip OI entirely when total symbols exceed this
-
-            fetch_oi = len(symbols) <= OI_THRESHOLD
+            fetch_oi = len(symbols) <= MULTIQUOTE_OI_THRESHOLD
             if not fetch_oi:
                 logger.info(
-                    f"Multiquote size {len(symbols)} > {OI_THRESHOLD}: skipping OI fetch (oi=0 for all symbols)"
+                    f"Multiquote size {len(symbols)} > {MULTIQUOTE_OI_THRESHOLD}: "
+                    "skipping per-symbol OI depth requests"
                 )
 
             # If symbols exceed batch size, process in batches
-            if len(symbols) > BATCH_SIZE:
-                logger.info(f"Processing {len(symbols)} symbols in batches of {BATCH_SIZE}")
+            if len(symbols) > MULTIQUOTE_BATCH_SIZE:
+                logger.info(
+                    f"Processing {len(symbols)} symbols in batches of {MULTIQUOTE_BATCH_SIZE}"
+                )
                 all_results = []
 
                 # Split symbols into batches
-                for i in range(0, len(symbols), BATCH_SIZE):
-                    batch = symbols[i : i + BATCH_SIZE]
+                for i in range(0, len(symbols), MULTIQUOTE_BATCH_SIZE):
+                    batch = symbols[i : i + MULTIQUOTE_BATCH_SIZE]
                     logger.debug(
-                        f"Processing batch {i // BATCH_SIZE + 1}: symbols {i + 1} to {min(i + BATCH_SIZE, len(symbols))}"
+                        f"Processing batch {i // MULTIQUOTE_BATCH_SIZE + 1}: symbols "
+                        f"{i + 1} to {min(i + MULTIQUOTE_BATCH_SIZE, len(symbols))}"
                     )
 
                     # Process this batch
@@ -234,11 +235,12 @@ class BrokerData:
                     all_results.extend(batch_results)
 
                     # Rate limit delay between batches
-                    if i + BATCH_SIZE < len(symbols):
-                        time.sleep(RATE_LIMIT_DELAY)
+                    if i + MULTIQUOTE_BATCH_SIZE < len(symbols):
+                        time.sleep(0.1)
 
                 logger.info(
-                    f"Successfully processed {len(all_results)} quotes in {(len(symbols) + BATCH_SIZE - 1) // BATCH_SIZE} batches"
+                    f"Successfully processed {len(all_results)} quotes in "
+                    f"{(len(symbols) + MULTIQUOTE_BATCH_SIZE - 1) // MULTIQUOTE_BATCH_SIZE} batches"
                 )
                 return all_results
             else:
@@ -275,9 +277,7 @@ class BrokerData:
             return 0
 
         if response.get("s") != "ok":
-            logger.debug(
-                f"Depth fetch for OI failed for {br_symbol}: {response.get('message')}"
-            )
+            logger.debug(f"Depth fetch for OI failed for {br_symbol}: {response.get('message')}")
             return 0
 
         depth_data = response.get("d", {}).get(br_symbol, {})
@@ -621,9 +621,7 @@ class BrokerData:
             logger.exception(error_msg)
             raise Exception(f"{error_msg}: {e}")
 
-    def get_option_chain(
-        self, symbol: str, strikecount: int, timestamp: str | None = None
-    ) -> dict:
+    def get_option_chain(self, symbol: str, strikecount: int, timestamp: str | None = None) -> dict:
         """
         Fetch strikes around ATM for `symbol` in a single call via Fyers'
         native /data/options-chain-v3 endpoint (see

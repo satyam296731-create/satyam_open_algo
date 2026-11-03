@@ -18,16 +18,21 @@ routinely exceeding the real 10 req/sec cap and getting HTTP 429'd.
 
 import threading
 import time
+from collections import deque
 
 from utils.broker_backpressure import BrokerBusyError, cap_server_delay, check_queue_wait
 
 _lock = threading.Lock()
 _last_call_time = 0.0
+MAX_CALLS_PER_MINUTE = 190
+WINDOW_SECONDS = 60.0
+_reserved_call_times: deque[float] = deque(maxlen=MAX_CALLS_PER_MINUTE)
 
 # Documented cap is 10 req/sec; pace at ~8 req/sec (0.125s) to leave headroom
 # for clock jitter and for order/fund/margin calls sharing the same quota
 # from other modules running concurrently in the same process.
 MIN_INTERVAL = 0.125
+WINDOW_HEADROOM_SECONDS = 0.01
 
 MAX_RETRIES = 3
 BASE_BACKOFF = 1.0  # seconds; exponential fallback when no Retry-After header: 1, 2, 4
@@ -40,11 +45,11 @@ def apply_rate_limit(kind="data"):
     across broker.fyers.api paces against the same clock, regardless of how
     many separate BrokerData/order_api calls are in flight at once.
 
-    Every caller books the slot after the last one, so a burst queues without
-    limit. Under the gthread worker each queued caller holds a request thread,
-    so one whose slot is further away than
-    ``utils.broker_backpressure.max_queue_wait(kind)`` is refused before it
-    books anything. Under eventlet and the dev server there is no bound.
+    Every caller books a slot against both Fyers' per-second and rolling
+    per-minute limits. Under the gthread worker a caller whose slot is further
+    away than ``utils.broker_backpressure.max_queue_wait(kind)`` is refused
+    before it books anything. Under eventlet and the dev server there is no
+    wait bound.
 
     Args:
         kind: ``"data"``, or ``"order"`` for order placement and changes.
@@ -55,10 +60,20 @@ def apply_rate_limit(kind="data"):
     global _last_call_time
     with _lock:
         now = time.time()
-        elapsed = now - _last_call_time
-        sleep_time = MIN_INTERVAL - elapsed if elapsed < MIN_INTERVAL else 0
+        while _reserved_call_times and _reserved_call_times[0] <= now - WINDOW_SECONDS:
+            _reserved_call_times.popleft()
+
+        next_call_time = max(now, _last_call_time + MIN_INTERVAL)
+        if len(_reserved_call_times) == MAX_CALLS_PER_MINUTE:
+            next_call_time = max(
+                next_call_time,
+                _reserved_call_times[0] + WINDOW_SECONDS + WINDOW_HEADROOM_SECONDS,
+            )
+
+        sleep_time = next_call_time - now
         check_queue_wait(sleep_time, kind)
-        _last_call_time = now + sleep_time
+        _last_call_time = next_call_time
+        _reserved_call_times.append(next_call_time)
 
     if sleep_time > 0:
         time.sleep(sleep_time)

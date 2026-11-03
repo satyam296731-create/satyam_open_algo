@@ -1,7 +1,9 @@
 import json
 import os
 
+from broker.fyers.api.rate_limiter import apply_rate_limit
 from broker.fyers.mapping.margin_data import parse_margin_response, transform_margin_positions
+from utils.broker_backpressure import BrokerBusyError
 from utils.httpx_client import get_httpx_client
 from utils.logging import get_logger
 
@@ -61,6 +63,7 @@ def calculate_margin_api(positions, auth):
 
     try:
         # Make the request using the v3 multiorder margin endpoint
+        apply_rate_limit()
         response = client.post(
             "https://api-t1.fyers.in/api/v3/multiorder/margin", headers=headers, json=payload
         )
@@ -95,6 +98,8 @@ def calculate_margin_api(positions, auth):
 
         return response, standardized_response
 
+    except BrokerBusyError:
+        raise
     except Exception as e:
         logger.error(f"Error calling Fyers margin API: {e}")
         error_response = {"status": "error", "message": f"Failed to calculate margin: {str(e)}"}

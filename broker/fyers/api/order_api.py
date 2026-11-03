@@ -172,7 +172,6 @@ def _invalidate_position_cache(auth):
     _position_cache.invalidate(auth)
 
 
-
 def get_open_position(tradingsymbol, exchange, product, auth):
     # Convert Trading Symbol from OpenAlgo Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
@@ -220,6 +219,7 @@ def place_order_api(data, auth):
         logger.debug(f"Placing order with payload: {json.dumps(payload, indent=2)}")
 
         # Make the POST request
+        apply_rate_limit("order")
         response = client.post(url, headers=headers, json=payload)
         response_data = response.json()
 
@@ -245,6 +245,8 @@ def place_order_api(data, auth):
 
         return response, response_data, orderid
 
+    except BrokerBusyError:
+        raise
     except httpx.HTTPError as e:
         logger.error(f"HTTP error during order placement: {e}")
         response = type("obj", (object,), {"status_code": 500, "status": 500})
@@ -376,6 +378,7 @@ def close_all_positions(current_api_key, auth):
         logger.debug("Closing all positions")
 
         # Make the DELETE request with the payload
+        apply_rate_limit("order")
         response = client.request("DELETE", url, headers=headers, json=payload)
         response_data = response.json()
 
@@ -389,6 +392,8 @@ def close_all_positions(current_api_key, auth):
             logger.warning(f"Failed to close all positions: {error_msg}")
             return {"status": "error", "message": error_msg}, response.status_code
 
+    except BrokerBusyError:
+        raise
     except httpx.HTTPError as e:
         logger.exception("HTTP error during close all positions")
         return {"status": "error", "message": f"HTTP error: {e}"}, 500
@@ -426,6 +431,7 @@ def cancel_order(orderid, auth):
         logger.debug(f"Cancelling order {orderid} with payload: {payload}")
 
         # Make the DELETE request with the order ID in the JSON body
+        apply_rate_limit("order")
         response = client.request("DELETE", url, headers=headers, json=payload)
         response_data = response.json()
 
@@ -439,6 +445,8 @@ def cancel_order(orderid, auth):
             logger.warning(f"Failed to cancel order {orderid}: {error_msg}")
             return {"status": "error", "message": error_msg}, response.status_code
 
+    except BrokerBusyError:
+        raise
     except httpx.HTTPError as e:
         logger.exception("HTTP error during order cancellation")
         return {"status": "error", "message": f"HTTP error: {e}"}, 500
@@ -476,6 +484,7 @@ def modify_order(data, auth):
         logger.debug(f"Modifying order with payload: {json.dumps(payload, indent=2)}")
 
         # Make the PATCH request
+        apply_rate_limit("order")
         response = client.patch(url, headers=headers, json=payload)
         response_data = response.json()
 
@@ -489,6 +498,8 @@ def modify_order(data, auth):
             logger.warning(f"Failed to modify order: {error_msg}")
             return {"status": "error", "message": error_msg}, response.status_code
 
+    except BrokerBusyError:
+        raise
     except httpx.HTTPError as e:
         logger.exception("HTTP error during order modification")
         return {"status": "error", "message": f"HTTP error: {e}"}, 500

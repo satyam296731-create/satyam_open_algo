@@ -89,6 +89,12 @@ fix, live in [docs/releases](releases/).
 
 ### Fixed
 
+- Fyers quote batches with more than 10 symbols no longer make an extra depth
+  request for every option just to retrieve open interest. Bulk quotes still
+  load, but open interest is unavailable on those larger multi-quote responses.
+  Fyers requests are also paced against a rolling 190-per-minute budget as
+  well as the existing per-second limit, leaving headroom below the broker's
+  documented quota.
 - Sandbox orders could occasionally fail to place with an error, and when
   they did, the order's margin stayed blocked with no order to show for it.
   Two orders on the same day could be given the same order id, more likely the

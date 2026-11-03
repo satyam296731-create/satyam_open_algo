@@ -9,7 +9,9 @@ from typing import Any, Dict, Optional
 import httpx
 
 from broker.fyers.api.order_api import get_positions
+from broker.fyers.api.rate_limiter import apply_rate_limit
 from broker.fyers.mapping.order_data import map_position_data
+from utils.broker_backpressure import BrokerBusyError
 from utils.httpx_client import get_httpx_client
 from utils.logging import get_logger
 
@@ -79,6 +81,7 @@ def get_margin_data(auth_token: str) -> dict[str, str]:
 
     try:
         # Get the funds data
+        apply_rate_limit()
         response = client.get("https://api-t1.fyers.in/api/v3/funds", headers=headers, timeout=30.0)
         response.raise_for_status()
 
@@ -177,6 +180,8 @@ def get_margin_data(auth_token: str) -> dict[str, str]:
             logger.exception("Error calculating fund totals")
             return {}
 
+    except BrokerBusyError:
+        raise
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 429:
             # Exponential backoff: 30s → 60s → 120s (max)
@@ -188,8 +193,7 @@ def get_margin_data(auth_token: str) -> dict[str, str]:
                     "backoff_seconds": backoff,
                 }
             logger.warning(
-                f"Fyers API rate limited (429). Backing off for {backoff}s. "
-                f"Serving cached data."
+                f"Fyers API rate limited (429). Backing off for {backoff}s. Serving cached data."
             )
             # Transient — serve genuinely-cached REAL data if we have it, else {}.
             return user_cache["data"] if user_cache["data"] else {}
