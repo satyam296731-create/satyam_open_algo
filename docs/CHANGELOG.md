@@ -10,6 +10,9 @@ fix, live in [docs/releases](releases/).
 
 ### Changed
 
+- NSE and BSE index intraday charts now show candle start times from 09:15 IST
+  inclusive to 15:15 exclusive. Daily and longer-interval candles, and
+  non-index charts, are unchanged.
 - Rebranded the trader-facing interface and installer output as SP Trading,
   added theme-aware SP Trading logos, and pointed source-based installers at
   the SP Trading repository. OpenAlgo source attribution and license notices

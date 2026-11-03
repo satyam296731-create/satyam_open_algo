@@ -1,8 +1,8 @@
 /** Broker capabilities and exchange sessions for shared SDK resampling and study history. */
 import {
   type BarsRequest,
-  SessionCalendar as Calendar,
   type DataFeed,
+  SessionCalendar as Calendar,
   planTimeframe,
   resolveInterval,
   type SessionCalendar,
@@ -17,6 +17,7 @@ import {
 } from 'openalgo-charts'
 import { createTimeframeProvider, type TimeframeProviderOptions } from 'openalgo-charts/indicators'
 import { ensureInterval } from '@/lib/chart/intervalRegistry'
+import { isIndexIntradayCandleTime } from './sessionHours'
 
 export interface TradingTimeframeOptions {
   providerId: string
@@ -31,6 +32,38 @@ export interface TradingTimeframeOptions {
 
 const DAY = 86400
 const unknownCalendar = new Calendar({ timezone: 'Asia/Kolkata', sessions: ['0000-0000'] })
+
+function filterIndexSessionBars<T extends { time: number }>(
+  request: BarsRequest,
+  bars: T[]
+): T[] {
+  return bars.filter((bar) =>
+    isIndexIntradayCandleTime(request.exchange, request.interval, bar.time)
+  )
+}
+
+function filterIndexSessionFeed(source: DataFeed): DataFeed {
+  return {
+    ...source,
+    getBars: async (request) => filterIndexSessionBars(request, await source.getBars(request)),
+    getBarsPage: source.getBarsPage
+      ? async (request) => {
+          const page = await source.getBarsPage!(request)
+          return { ...page, bars: filterIndexSessionBars(request, page.bars) }
+        }
+      : undefined,
+    getCachedBars: source.getCachedBars
+      ? async (request) => {
+          const bars = await source.getCachedBars!(request)
+          return bars ? filterIndexSessionBars(request, bars) : undefined
+        }
+      : undefined,
+    dataVariants: source.dataVariants?.bind(source),
+    subscribeBars: source.subscribeBars?.bind(source),
+    subscribeDepth: source.subscribeDepth?.bind(source),
+    searchSymbols: source.searchSymbols?.bind(source),
+  }
+}
 
 function sourceBounds(
   calendar: SessionCalendar | null,
@@ -85,7 +118,7 @@ export function createTradingTimeframes(source: DataFeed, options: TradingTimefr
         })),
     }
   }
-  const resampler = withTimeframes(source, { market, now })
+  const resampler = withTimeframes(filterIndexSessionFeed(source), { market, now })
   const prepare = async (request: BarsRequest) => {
     if (request.signal?.aborted) throw request.signal.reason
     await options.prepare?.(request)

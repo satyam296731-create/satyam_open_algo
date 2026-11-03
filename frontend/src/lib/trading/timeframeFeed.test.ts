@@ -20,6 +20,67 @@ const options = (nativeIntervals = ['1m', '5m', 'D']) => ({
 })
 
 describe('broker custom timeframes', () => {
+  it('keeps only NSE and BSE index intraday bars from 09:15 to 15:15 IST', async () => {
+    const close = start + 6 * 60 * 60
+    const sourceBars = [start - 60, start, close - 60, close].map((time, index) => ({
+      time,
+      open: index,
+      high: index + 2,
+      low: index - 1,
+      close: index + 1,
+    }))
+    const service = createTradingTimeframes(
+      { getBars: async () => sourceBars },
+      { ...options(['1m']), now: () => close + 60 }
+    )
+
+    await expect(
+      service.feed.getBars({
+        symbol: 'NIFTY',
+        exchange: 'NSE_INDEX',
+        interval: '1m',
+        from: start - 60,
+        to: close + 60,
+      })
+    ).resolves.toEqual([sourceBars[1], sourceBars[2]])
+    service.destroy()
+  })
+
+  it('filters index history pages and leaves daily history unchanged', async () => {
+    const close = start + 6 * 60 * 60
+    const sourceBars = [start - 60, start, close - 60, close].map((time, index) => ({
+      time,
+      open: index,
+      high: index + 2,
+      low: index - 1,
+      close: index + 1,
+    }))
+    const getBarsPage = vi.fn(async () => ({ bars: sourceBars, hasMore: true }))
+    const service = createTradingTimeframes(
+      { getBars: async () => sourceBars, getBarsPage },
+      { ...options(['1m', 'D']), now: () => close + 60 }
+    )
+
+    const page = await service.feed.getBarsPage!({
+      symbol: 'NIFTY',
+      exchange: 'BSE_INDEX',
+      interval: '1m',
+      before: close + 60,
+      countBack: 10,
+    })
+    expect(page.bars).toEqual([sourceBars[1], sourceBars[2]])
+
+    const daily = await service.feed.getBars({
+      symbol: 'NIFTY',
+      exchange: 'NSE_INDEX',
+      interval: 'D',
+      from: start - 86400,
+      to: close + 86400,
+    })
+    expect(daily).toEqual(sourceBars)
+    service.destroy()
+  })
+
   it('uses the source exchange timezone for a complete UTC month', async () => {
     const from = Date.parse('2026-10-01T00:00:00Z') / 1000
     const daily = Array.from({ length: 31 }, (_, i) => ({

@@ -129,6 +129,7 @@ import { parseRangeChoice, type RangeChoice, serializeRangeChoice } from './rang
 import { replayTiming } from './replayTiming'
 import {
   applySessionHours,
+  isIndexIntradayCandleTime,
   prepareSessionHours,
   sessionCalendar,
   sessionCalendarRevision,
@@ -6492,7 +6493,10 @@ export class TradingTerminal {
     // follows that candle's direction rather than sitting amber forever.
     if (this.position && this.posLine) this.posLine.setLeftLabel(this.posLabel())
     if (this.tradeBtns && !this.depthActive) this.tradeBtns.setMark(e.ltp)
-    if (this.builder) {
+    if (
+      this.builder &&
+      isIndexIntradayCandleTime(this.sym.exchange, this.interval, e.timeSec || nowSec())
+    ) {
       let u
       try {
         u = this.builder.onTick({ time: e.timeSec || nowSec(), price: e.ltp, ltq: e.ltq })

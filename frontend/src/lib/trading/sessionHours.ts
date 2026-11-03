@@ -24,6 +24,7 @@ import type { MarketTiming } from '@/types/admin'
 
 const ZONE = 'Asia/Kolkata'
 const IST_OFFSET_MS = 19_800_000
+const IST_OFFSET_SECONDS = 19_800
 const DAY_MS = 86_400_000
 const TIMEOUT_MS = 8_000
 /** A failed fetch is tried again no sooner than this, so a broken endpoint costs one request per chart build at most every few minutes. */
@@ -36,6 +37,9 @@ const ROUND_THE_CLOCK = new Set(['CRYPTO'])
  * 09:08) is a fixed exchange rule rather than something an admin edits.
  */
 const PRE_OPEN_MINUTES: Record<string, number> = { NSE: 15, BSE: 15 }
+const INDEX_EXCHANGES = new Set(['NSE_INDEX', 'BSE_INDEX'])
+const INDEX_SESSION_OPEN_SECONDS = 9 * 60 * 60 + 15 * 60
+const INDEX_SESSION_CLOSE_SECONDS = 15 * 60 * 60 + 15 * 60
 
 /** One row of the holiday list, as `/api/v1/market/holidays` returns it. */
 export interface HolidayRow {
@@ -50,6 +54,22 @@ export type TimingRow = Pick<MarketTiming, 'exchange' | 'start_offset' | 'end_of
 /** The exchange whose calendar an instrument follows: an index trades the hours of its exchange. */
 export function calendarExchange(exchange: string): string {
   return exchange.endsWith('_INDEX') ? exchange.slice(0, -'_INDEX'.length) : exchange
+}
+
+export function isIndexExchange(exchange: string): boolean {
+  return INDEX_EXCHANGES.has(exchange)
+}
+
+/** Whether an intraday index tick or candle falls within 09:15–15:15 IST. */
+export function isIndexSessionTime(time: number): boolean {
+  if (!Number.isFinite(time)) return false
+  const istSeconds = ((Math.floor(time + IST_OFFSET_SECONDS) % 86_400) + 86_400) % 86_400
+  return istSeconds >= INDEX_SESSION_OPEN_SECONDS && istSeconds < INDEX_SESSION_CLOSE_SECONDS
+}
+
+export function isIndexIntradayCandleTime(exchange: string, interval: string, time: number): boolean {
+  if (!isIndexExchange(exchange) || !/^\d+[smh]$/.test(interval)) return true
+  return isIndexSessionTime(time)
 }
 
 const pad = (n: number) => String(n).padStart(2, '0')
@@ -88,7 +108,9 @@ export function calendarSpec(
   const row = timings.find((t) => t.exchange === code)
   if (!row) return null
   const start = Number(row.start_offset)
-  const end = Number(row.end_offset)
+  const end = INDEX_EXCHANGES.has(exchange)
+    ? INDEX_SESSION_CLOSE_SECONDS * 1000
+    : Number(row.end_offset)
   if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end > DAY_MS || end <= start)
     return null
   const allDay = ROUND_THE_CLOCK.has(code)

@@ -4,6 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   applySessionHours,
   calendarSpec,
+  isIndexIntradayCandleTime,
+  isIndexSessionTime,
   type HolidayRow,
   resetSessionHours,
   type TimingRow,
@@ -73,10 +75,24 @@ describe('calendarSpec', () => {
     })
   })
 
-  it('gives an index the hours of its exchange', () => {
-    expect(calendarSpec('NSE_INDEX', TIMINGS, HOLIDAYS)).toEqual(
-      calendarSpec('NSE', TIMINGS, HOLIDAYS)
-    )
+  it('limits index chart hours to 09:15–15:15 IST without changing exchange hours', () => {
+    expect(calendarSpec('NSE_INDEX', TIMINGS, HOLIDAYS)?.sessions).toEqual(['0915-1515:23456'])
+    expect(calendarSpec('NSE', TIMINGS, HOLIDAYS)?.sessions).toEqual(['0915-1530:23456'])
+  })
+
+  it('accepts index candles from 09:15 up to, but not including, 15:15 IST', () => {
+    expect(isIndexSessionTime(secs(ist('2026-10-01', 9, 14)))).toBe(false)
+    expect(isIndexSessionTime(secs(ist('2026-10-01', 9, 15)))).toBe(true)
+    expect(isIndexSessionTime(secs(ist('2026-10-01', 15, 14)))).toBe(true)
+    expect(isIndexSessionTime(secs(ist('2026-10-01', 15, 15)))).toBe(false)
+  })
+
+  it('limits only intraday index candles and leaves other chart candles unchanged', () => {
+    const beforeOpen = secs(ist('2026-10-01', 9, 14))
+    expect(isIndexIntradayCandleTime('NSE_INDEX', '1m', beforeOpen)).toBe(false)
+    expect(isIndexIntradayCandleTime('BSE_INDEX', '5m', beforeOpen)).toBe(false)
+    expect(isIndexIntradayCandleTime('NSE', '1m', beforeOpen)).toBe(true)
+    expect(isIndexIntradayCandleTime('NSE_INDEX', 'D', beforeOpen)).toBe(true)
   })
 
   it('keeps the MCX evening session on a cash holiday and an overnight Muhurat window', () => {

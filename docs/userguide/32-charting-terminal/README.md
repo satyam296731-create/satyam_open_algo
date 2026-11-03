@@ -11,6 +11,10 @@ feed as the rest of OpenAlgo.
 Price updates arrive over the WebSocket feed. History refreshes reconcile bars
 and supply fields the live quote stream does not report.
 
+Intraday candles for NSE and BSE indices have start times from 09:15 IST
+inclusive to 15:15 exclusive, so the final candle ends at 15:15. Daily and
+longer-interval index candles are unchanged.
+
 ## Opening It
 
 Navigate to **Trading** in the top bar, or go to
