@@ -51,6 +51,7 @@ def test_fyers_pacer_respects_rolling_minute_cap(monkeypatch):
     monkeypatch.setattr(rate_limiter, "time", fake_time)
     monkeypatch.setattr(rate_limiter, "_lock", Lock())
     monkeypatch.setattr(rate_limiter, "_last_call_time", clock["now"] - 1)
+    monkeypatch.setattr(rate_limiter, "_cooldown_until", 0.0)
     monkeypatch.setattr(
         rate_limiter,
         "_reserved_call_times",
@@ -71,6 +72,74 @@ def test_fyers_pacer_respects_rolling_minute_cap(monkeypatch):
             call_time - rate_limiter.WINDOW_SECONDS < t <= call_time for t in call_times[: end + 1]
         )
         assert in_window <= rate_limiter.MAX_CALLS_PER_MINUTE
+
+
+def test_fyers_429_cools_down_all_api_callers(monkeypatch):
+    from broker.fyers.api import rate_limiter
+
+    clock = {"now": 1_000.0}
+
+    def sleep(seconds):
+        clock["now"] += seconds
+        if not clock.get("limited"):
+            clock["limited"] = True
+            assert rate_limiter.defer_after_rate_limit({"Retry-After": "2"}, 0) == 2.0
+
+    monkeypatch.setattr(
+        rate_limiter,
+        "time",
+        SimpleNamespace(
+            time=lambda: clock["now"],
+            sleep=sleep,
+        ),
+    )
+    monkeypatch.setattr(rate_limiter, "_lock", Lock())
+    monkeypatch.setattr(rate_limiter, "_last_call_time", clock["now"])
+    monkeypatch.setattr(rate_limiter, "_cooldown_until", 0.0)
+    monkeypatch.setattr(
+        rate_limiter,
+        "_reserved_call_times",
+        deque(maxlen=rate_limiter.MAX_CALLS_PER_MINUTE),
+    )
+
+    rate_limiter.apply_rate_limit()
+
+    assert clock["now"] >= 1_002.25
+    assert rate_limiter._last_call_time >= 1_002.25
+
+
+def test_fyers_history_429_registers_shared_cooldown(monkeypatch):
+    import httpx
+
+    from broker.fyers.api import data
+
+    request = httpx.Request("GET", "https://api-t1.fyers.in/data/history")
+    responses = iter(
+        [
+            httpx.Response(429, headers={"Retry-After": "1"}, request=request),
+            httpx.Response(200, json={"s": "ok"}, request=request),
+        ]
+    )
+    delays = []
+    monkeypatch.setattr(
+        data,
+        "get_httpx_client",
+        lambda: SimpleNamespace(get=lambda *_args, **_kwargs: next(responses)),
+    )
+    monkeypatch.setattr(data, "apply_rate_limit", lambda: None)
+    monkeypatch.setattr(
+        data,
+        "defer_after_rate_limit",
+        lambda headers, attempt: delays.append((headers, attempt)) or 1.0,
+    )
+    monkeypatch.setattr(data, "time", SimpleNamespace(sleep=lambda _seconds: None))
+
+    result = data.get_api_response("/data/history", "token")
+
+    assert result == {"s": "ok"}
+    assert len(delays) == 1
+    assert delays[0][0]["Retry-After"] == "1"
+    assert delays[0][1] == 0
 
 
 def test_direct_order_calls_propagate_pacer_refusals(monkeypatch):

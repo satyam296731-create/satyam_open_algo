@@ -1,14 +1,9 @@
 # api/funds.py
 
-import json
-import os
-
-import httpx
-
 from broker.groww.api.rate_limiter import groww_request
+from utils.broker_backpressure import BrokerBusyError
 from utils.httpx_client import get_httpx_client
 from utils.logging import get_logger
-from utils.broker_backpressure import BrokerBusyError
 
 logger = get_logger(__name__)
 
@@ -114,7 +109,7 @@ def get_margin_data(auth_token):
 
     except BrokerBusyError:
         raise
-    except Exception as e:
-        logger.error(f"Error in get_margin_data: {e}")
+    except Exception:
+        logger.exception("Error in get_margin_data")
         # Return an empty dictionary in case of unexpected data structure or error
         return {}

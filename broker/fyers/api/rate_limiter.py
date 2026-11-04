@@ -24,14 +24,14 @@ from utils.broker_backpressure import BrokerBusyError, cap_server_delay, check_q
 
 _lock = threading.Lock()
 _last_call_time = 0.0
-MAX_CALLS_PER_MINUTE = 190
+_cooldown_until = 0.0
+MAX_CALLS_PER_MINUTE = 150
 WINDOW_SECONDS = 60.0
 _reserved_call_times: deque[float] = deque(maxlen=MAX_CALLS_PER_MINUTE)
 
-# Documented cap is 10 req/sec; pace at ~8 req/sec (0.125s) to leave headroom
-# for clock jitter and for order/fund/margin calls sharing the same quota
-# from other modules running concurrently in the same process.
-MIN_INTERVAL = 0.125
+# Fyers shares its limits across endpoints; keep a wider margin for bursts and
+# requests made by other clients using the same API key.
+MIN_INTERVAL = 0.25
 WINDOW_HEADROOM_SECONDS = 0.01
 
 MAX_RETRIES = 3
@@ -58,25 +58,31 @@ def apply_rate_limit(kind="data"):
         BrokerBusyError: Under gthread, when the slot is too far away.
     """
     global _last_call_time
-    with _lock:
-        now = time.time()
-        while _reserved_call_times and _reserved_call_times[0] <= now - WINDOW_SECONDS:
-            _reserved_call_times.popleft()
+    while True:
+        with _lock:
+            now = time.time()
+            while _reserved_call_times and _reserved_call_times[0] <= now - WINDOW_SECONDS:
+                _reserved_call_times.popleft()
 
-        next_call_time = max(now, _last_call_time + MIN_INTERVAL)
-        if len(_reserved_call_times) == MAX_CALLS_PER_MINUTE:
-            next_call_time = max(
-                next_call_time,
-                _reserved_call_times[0] + WINDOW_SECONDS + WINDOW_HEADROOM_SECONDS,
-            )
+            next_call_time = max(now, _last_call_time + MIN_INTERVAL, _cooldown_until)
+            if len(_reserved_call_times) == MAX_CALLS_PER_MINUTE:
+                next_call_time = max(
+                    next_call_time,
+                    _reserved_call_times[0] + WINDOW_SECONDS + WINDOW_HEADROOM_SECONDS,
+                )
 
-        sleep_time = next_call_time - now
-        check_queue_wait(sleep_time, kind)
-        _last_call_time = next_call_time
-        _reserved_call_times.append(next_call_time)
+            check_queue_wait(next_call_time - now, kind)
+            _last_call_time = next_call_time
+            _reserved_call_times.append(next_call_time)
 
-    if sleep_time > 0:
-        time.sleep(sleep_time)
+        if next_call_time > now:
+            time.sleep(next_call_time - now)
+
+        with _lock:
+            if next_call_time >= _cooldown_until:
+                return
+            if next_call_time in _reserved_call_times:
+                _reserved_call_times.remove(next_call_time)
 
 
 def retry_delay_from_headers(headers, attempt, kind="data"):
@@ -102,6 +108,15 @@ def retry_delay_from_headers(headers, attempt, kind="data"):
             "can be held. This request was not retried. Try again in a minute.",
             retry_after=delay,
         )
+    return delay
+
+
+def defer_after_rate_limit(headers, attempt, kind="data"):
+    """Apply a broker-requested cooldown to every Fyers API caller."""
+    global _cooldown_until
+    delay = retry_delay_from_headers(headers, attempt, kind)
+    with _lock:
+        _cooldown_until = max(_cooldown_until, time.time() + delay)
     return delay
 
 

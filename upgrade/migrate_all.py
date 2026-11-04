@@ -86,6 +86,7 @@ MIGRATIONS = [
     ("migrate_historify_drop_indexes.py", "Historify Unused Index Removal (#1779)"),
     ("migrate_historify_sequences.py", "Historify ID Sequences"),
     ("migrate_watchlist.py", "Charting Terminal Watchlists"),
+    ("migrate_signal_scanner.py", "Dashboard Signal Scanner"),
     ("migrate_strategy_module.py", "Strategy Module (multi-leg options + RMS)"),
     ("migrate_strategy_universe_tab.py", "Strategy Module Universe Tab Normalization"),
     ("migrate_agent.py", "Agent Module (LLM chat and chart surfaces)"),
@@ -100,7 +101,13 @@ MIGRATIONS = [
 # required schema migrations are listed explicitly: their failure must reach
 # this runner's summary and process exit code instead of being reported as a
 # successful warning.
-REQUIRED_MIGRATIONS = frozenset({"migrate_strategy_module.py", "migrate_strategy_universe_tab.py"})
+REQUIRED_MIGRATIONS = frozenset(
+    {
+        "migrate_strategy_module.py",
+        "migrate_strategy_universe_tab.py",
+        "migrate_signal_scanner.py",
+    }
+)
 
 
 def run_migration(script_name, description):

@@ -7,7 +7,11 @@ from datetime import datetime
 import httpx
 import pandas as pd
 
-from broker.fyers.api.rate_limiter import MAX_RETRIES, apply_rate_limit, retry_delay_from_headers
+from broker.fyers.api.rate_limiter import (
+    MAX_RETRIES,
+    apply_rate_limit,
+    defer_after_rate_limit,
+)
 from database.token_db import get_br_symbol, get_oa_symbol
 from utils.broker_backpressure import BrokerBusyError
 from utils.constants import FNO_EXCHANGES
@@ -89,7 +93,7 @@ def get_api_response(endpoint, auth, method="GET", payload="", _retry_count=0):
         raise
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 429 and _retry_count < MAX_RETRIES:
-            delay = retry_delay_from_headers(e.response.headers, _retry_count)
+            delay = defer_after_rate_limit(e.response.headers, _retry_count)
             logger.warning(
                 f"Fyers API rate limited (429) on {endpoint}. Retrying in "
                 f"{delay:.2f}s (attempt {_retry_count + 1}/{MAX_RETRIES})"
